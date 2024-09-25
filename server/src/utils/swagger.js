@@ -15,6 +15,17 @@ const options = {
         url: ""
       },
     },
+    components: {
+      securitySchemes: {
+          Authorization: {
+              type: "http",
+              scheme: "bearer",
+              bearerFormat: "JWT",
+              value: "Bearer <JWT token here>"
+          }
+      }
+  },
+  
     servers: [
       {
         url: "http://localhost:3000",
