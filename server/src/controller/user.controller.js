@@ -112,3 +112,33 @@ export const getUserById = async (req, res) => {
   }
 };
 
+
+// Update user information based on userId
+export const updateUser = async (req, res) => {
+  const { userId } = req.params;
+  const { userName, userType, userAddress, userPhoneNumber, email, userStatus } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ message: 'User ID is required' });
+  }
+
+  try {
+    const client = await getConnection();
+    const query = `
+      UPDATE "User" 
+      SET "userName" = $1, "userType" = $2, "userAddress" = $3, 
+          "userPhoneNumber" = $4, "email" = $5, "userStatus" = $6
+      WHERE "userId" = $7`;
+    const values = [userName, userType, userAddress, userPhoneNumber, email, userStatus, userId];
+    const result = await client.query(query, values);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ message: 'User updated successfully' });
+  } catch (err) {
+    console.error('Error updating user:', err);
+    res.status(500).send('Server error');
+  }
+};

@@ -198,6 +198,58 @@ router.post('/login', login);
  *         description: Server error
  */
 router.get('/:id', getUserById);
+/**
+ * @swagger
+ * /api/user/update/{userId}:
+ *   put:
+ *     tags:
+ *     - User Controller
+ *     summary: Update a user's information
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the user to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userName:
+ *                 type: string
+ *                 example: John Doe
+ *               userType:
+ *                 type: string
+ *                 enum: [Admin, Shop, Staff, Customer]
+ *                 example: Admin
+ *               userAddress:
+ *                 type: string
+ *                 example: 123 Main St
+ *               userPhoneNumber:
+ *                 type: string
+ *                 example: 123456789
+ *               email:
+ *                 type: string
+ *                 example: johndoe@example.com
+ *               userStatus:
+ *                 type: boolean
+ *                 example: true
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ *       400:
+ *         description: Bad request (User ID is required)
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/update/:userId', updateUser);
+
 
 
 export default router;
