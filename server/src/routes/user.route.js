@@ -97,6 +97,63 @@ router.get('/getalluser', getAllUsers);
  *         description: Server Error
  */
 router.post('/register', register);
+/**
+ * @swagger
+ * /api/user/login:
+ *   post:
+ *     tags:
+ *     - User Controller
+ *     summary: Log in a user
+ *     description: This endpoint allows a user to log in by providing their email and password.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: johndoe@mail.com
+ *               password:
+ *                 type: string
+ *                 example: johnDoe20!@
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Login successful
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: integer
+ *                     username:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     userType:
+ *                       type: string
+ *                     status:
+ *                       type: boolean
+ *       400:
+ *         description: Bad Request - Missing or invalid input
+ *       401:
+ *         description: Unauthorized - Invalid email or password
+ *       500:
+ *         description: Server error
+ */
+router.post('/login', login);
 
 
 export default router;

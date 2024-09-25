@@ -40,3 +40,39 @@ export const register = async (req, res) => {
     res.status(500).send(err.message);
   }
 };
+
+// login user 
+
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: "Email and password are required" });
+  }
+
+  try {
+    const client = await getConnection();
+    const query = 'SELECT * FROM "User" WHERE email = $1 AND password = $2';
+    const values = [email, password];
+    const result = await client.query(query, values);
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    const user = result.rows[0];
+    res.status(200).json({
+      message: "Login successful",
+      user: {
+        id: user.userId,
+        username: user.userName,
+        email: user.email,
+        userType: user.userType,
+        status: user.userStatus
+      }
+    });
+  } catch (err) {
+    console.error('Error executing login query:', err);
+    res.status(500).send('Server error');
+  }
+};
