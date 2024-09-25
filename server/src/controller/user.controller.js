@@ -13,21 +13,24 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-// REGISTER 
 export const register = async (req, res) => {
   const { userType, username, email, password, userAddress, userPhoneNumber } = req.body;
 
+  // Validate required fields
   if (!userType || !username || !email || !password) {
     return res.status(400).json({ message: 'Please provide all required fields.' });
   }
 
-  const validUserTypes = ['Admin', 'Shop', 'Staff', 'Customer'];
+  // Check for valid user types
+  const validUserTypes = ['Staff', 'Customer', 'Admin', 'Shop'];
   if (!validUserTypes.includes(userType)) {
     return res.status(400).json({ message: 'Invalid userType. Must be one of Admin, Shop, Staff, Customer.' });
   }
 
   try {
     const client = await getConnection();
+    
+    // Insert into User table with unique userName
     const query = `
       INSERT INTO "User" (userType, userName, email, password, userAddress, userPhoneNumber)
       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
@@ -36,28 +39,41 @@ export const register = async (req, res) => {
 
     res.status(201).json({ message: 'User successfully registered!', user: result.rows[0] });
   } catch (err) {
+    // Handle unique constraint violation (PostgreSQL specific code: 23505)
+    if (err.code === '23505') {  
+      return res.status(409).json({ message: 'Username already exists. Please choose a different username.' });
+    }
     console.error('Error executing query:', err);
     res.status(500).send(err.message);
   }
 };
 
+
 // login user 
-
 export const login = async (req, res) => {
-  const { email, password } = req.body;
+  const { username, email, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ message: "Email and password are required" });
+  if ((!username && !email) || !password) {
+    return res.status(400).json({ message: "Username or Email and password are required" });
   }
 
   try {
     const client = await getConnection();
-    const query = 'SELECT * FROM "User" WHERE email = $1 AND password = $2';
-    const values = [email, password];
+    let query, values;
+
+    // Determine whether to search by username or email
+    if (username) {
+      query = 'SELECT * FROM "User" WHERE "username" = $1 AND "password" = $2';
+      values = [username, password];
+    } else if (email) {
+      query = 'SELECT * FROM "User" WHERE "email" = $1 AND "password" = $2';
+      values = [email, password];
+    }
+
     const result = await client.query(query, values);
 
     if (result.rows.length === 0) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Invalid username/email or password" });
     }
 
     const user = result.rows[0];
@@ -76,9 +92,10 @@ export const login = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
+
+
+
 // get user by id 
-
-
 export const getUserById = async (req, res) => {
   const { id } = req.params;
 
