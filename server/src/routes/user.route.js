@@ -1,6 +1,6 @@
 // src/routes/user.route.js
 import express from 'express';
-import { getAllUsers, register, login, getUserById,updateUser,deleteUser } from '../controllers/user.controller.js';
+import { getAllUsers, register, login, getUserById,updateUser,deleteUser } from '../controller/user.controller.js';
 const router = express.Router();
 /**
  * @swagger

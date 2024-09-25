@@ -10,7 +10,7 @@ const config = {
   password: "lvGPTj8NnRhC6xn3KKhlT2lEzmjUvmu7",
   database: "koi",
   ssl: {
-    rejectUnauthorized: false, // You might want to enable this in production
+    rejectUnauthorized: false,
   },
 };
 

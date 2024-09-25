@@ -1,11 +1,14 @@
-const sql = require('mssql');
-const express = require('express');
+import express from 'express';
+import cors from 'cors';
+import { getConnection } from './src/database/db.js';
 import swaggerDocs from './src/utils/swagger.js';
+import userRoutes from './src/routes/user.route.js';
+
 const app = express();
-
-
 const port = process.env.PORT || 3000;
 
+app.use(express.json());
+app.use(cors());
 
 app.use('/api/user', userRoutes);
 
@@ -18,17 +21,7 @@ getConnection().then(() => {
   console.error('Invalid database connection:', error);
 });
 
-
-
-
-// Start the server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
-
-// Handle application shutdown
 process.on('SIGINT', () => {
-  sql.close();
+  console.log('Closing PostgreSQL connection');
   process.exit();
 });
