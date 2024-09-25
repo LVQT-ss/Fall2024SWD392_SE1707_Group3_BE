@@ -76,3 +76,39 @@ export const login = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
+// get user by id 
+
+
+export const getUserById = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ message: "User ID is required" });
+  }
+
+  try {
+    const client = await getConnection();
+    const query = 'SELECT * FROM "User" WHERE "userId" = $1';
+    const values = [id];
+    const result = await client.query(query, values);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const user = result.rows[0];
+    res.status(200).json({
+      id: user.userId,
+      username: user.userName,
+      email: user.email,
+      userType: user.userType,
+      status: user.userStatus,
+      phone: user.userPhoneNumber,
+      address: user.userAddress
+    });
+  } catch (err) {
+    console.error('Error executing query:', err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+

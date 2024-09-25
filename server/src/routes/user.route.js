@@ -154,6 +154,50 @@ router.post('/register', register);
  *         description: Server error
  */
 router.post('/login', login);
+/**
+ * @swagger
+ * /api/user/{id}:
+ *   get:
+ *     tags:
+ *     - User Controller
+ *     summary: Retrieve a specific user by ID
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: Numeric ID of the user to retrieve
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved the user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: integer
+ *                 username:
+ *                   type: string
+ *                 email:
+ *                   type: string
+ *                 userType:
+ *                   type: string
+ *                 status:
+ *                   type: boolean
+ *                 phone:
+ *                   type: string
+ *                 address:
+ *                   type: string
+ *       404:
+ *         description: User not found
+ *       400:
+ *         description: Invalid request, User ID is missing
+ *       500:
+ *         description: Server error
+ */
+router.get('/:id', getUserById);
 
 
 export default router;
