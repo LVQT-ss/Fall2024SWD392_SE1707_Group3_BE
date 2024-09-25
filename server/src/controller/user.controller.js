@@ -142,3 +142,29 @@ export const updateUser = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
+
+
+// Delete a user based on userId
+export const deleteUser = async (req, res) => {
+  const { userId } = req.params;
+
+  if (!userId) {
+    return res.status(400).json({ message: 'User ID is required' });
+  }
+
+  try {
+    const client = await getConnection();
+    const query = 'DELETE FROM "User" WHERE "userId" = $1';
+    const values = [userId];
+    const result = await client.query(query, values);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ message: 'User deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting user:', err);
+    res.status(500).send('Server error');
+  }
+};

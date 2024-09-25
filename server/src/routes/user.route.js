@@ -251,5 +251,31 @@ router.get('/:id', getUserById);
 router.put('/update/:userId', updateUser);
 
 
+/**
+ * @swagger
+ * /api/user/delete/{userId}:
+ *   delete:
+ *     tags:
+ *     - User Controller
+ *     summary: Delete a user
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the user to delete
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ *       400:
+ *         description: Bad request (User ID is required)
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+router.delete('/delete/:userId', deleteUser);
+
 
 export default router;
