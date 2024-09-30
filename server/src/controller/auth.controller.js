@@ -1,8 +1,6 @@
-// src/controller/auth.controller.js
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.models.js';
-import { errorHandler } from '../utils/error.js';
 
 export const register = async (req, res) => {
   const { usertype, username, email, password, userAddress, userPhoneNumber } = req.body;

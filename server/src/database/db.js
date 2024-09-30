@@ -5,11 +5,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const sequelize = new Sequelize({
-  host: process.env.DB_HOST || "dpg-crpdsv88fa8c73e0lpgg-a.singapore-postgres.render.com",
-  port: process.env.DB_PORT || 5432,
-  username: process.env.DB_USER || "koi_user",
-  password: process.env.DB_PASSWORD || "lvGPTj8NnRhC6xn3KKhlT2lEzmjUvmu7",
-  database: process.env.DB_NAME || "koi",
+  host: process.env.DB_HOST ,
+  port: process.env.DB_PORT ,
+  username: process.env.DB_USER ,
+  password: process.env.DB_PASSWORD ,
+  database: process.env.DB_NAME ,
   dialect: 'postgres',
   dialectOptions: {
     ssl: {

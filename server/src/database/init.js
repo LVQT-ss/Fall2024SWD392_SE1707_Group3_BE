@@ -1,6 +1,5 @@
 // src/database/init.js
 import sequelize from './db.js';
-import User from '../models/user.models.js'; // Import các mô hình khác mà bạn cần
 
 const initDB = async () => {
   try {
