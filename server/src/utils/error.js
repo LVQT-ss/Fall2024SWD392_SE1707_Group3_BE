@@ -1,6 +1,8 @@
 // src/utils/error.js
-export const errorHandler = (res, error, message = 'Server error', statusCode = 500) => {
-    console.error(message, error);
-    res.status(statusCode).json({ message, error: error.message });
+export const errorHandler = (statusCode,message) => {
+  const error = new Error()
+  error.statusCode = statusCode
+  error.message = message;
+  return error;
   };
   
