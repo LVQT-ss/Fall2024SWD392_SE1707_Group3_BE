@@ -3,6 +3,7 @@ import sequelize from './db.js';
 import User from '../models/user.models.js';
 import Pond from '../models/Pond.model.js';
 import KoiFish from '../models/KoiFish.model.js';
+import KoiRecord from '../models/KoiRecord.model.js';
 const initDB = async () => {
   try {
     await sequelize.authenticate();

@@ -10,7 +10,6 @@ import koiRoutes from  './src/routes/koi.route.js'
 import dotenv from 'dotenv';
 
 dotenv.config();
-console.log('JWT Secret:', process.env.JWT_SECRET);
 const app = express();
 const port = process.env.PORT || 3000;
 
