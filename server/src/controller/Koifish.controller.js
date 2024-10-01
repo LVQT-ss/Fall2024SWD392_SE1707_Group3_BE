@@ -41,3 +41,13 @@ export const addKoi = async (req, res) => {
     });
   }
 };
+
+export const getAllKoi = async (req , res) =>  {
+    try {
+        const kois = await KoiFish.findAll();
+        res.json(kois);
+      } catch (err) {
+        console.error('Error fetching koi fish:', err);
+        res.status(500).send(err.message);
+      }
+    };

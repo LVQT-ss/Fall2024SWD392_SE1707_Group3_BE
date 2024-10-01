@@ -1,5 +1,5 @@
 import express from 'express';
-import { addKoi } from '../controller/Koifish.controller.js';
+import { addKoi, getAllKoi } from '../controller/Koifish.controller.js';
 import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = express.Router();
@@ -94,5 +94,27 @@ const router = express.Router();
  *           type: integer
  */
 router.post('/addKoi', verifyToken, addKoi);
+
+/**
+ * @swagger
+ * /api/koi/getAllKoi:
+ *   get:
+ *     tags:
+ *       - Koi Fish Controller
+ *     summary: Retrieve all koi
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved koi fish
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/KoiFish'
+ *       500:
+ *         description: Server error
+ */
+router.get('/getAllKoi', verifyToken, getAllKoi);
+
 
 export default router;
