@@ -1,5 +1,5 @@
-import KoiFish from '../models/KoiFish.model.js';
-import Pond from '../models/Pond.model.js';
+import KoiFish from '../models/Koifish.model.js';
+import Pond from '../models/Pond.model.js'
 import KoiRecord from '../models/KoiRecord.model.js';
 export const addKoi = async (req, res) => {
   try {
@@ -11,8 +11,8 @@ export const addKoi = async (req, res) => {
     }
 
     // Check if the pond exists
-    const pond = await Pond.findByPk(currentPondId);
-    if (!pond) {
+    const Pond = await Pond.findByPk(currentPondId);
+    if (!Pond) {
       return res.status(400).json({ success: false, message: 'Invalid pond ID' });
     }
 

@@ -1,5 +1,5 @@
 import express from 'express';
-import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord } from '../controller/Koifish.controller.js';
+import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord } from "../controller/Koifish.controller.js"
 import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = express.Router();
@@ -212,7 +212,7 @@ router.get('/getAllKoi', verifyToken, getAllKoi);
  *         foodRequire:
  *           type: number
  */
-router.post('/koi-record', addKoiRecord);
+router.post('/koi-record', verifyToken,addKoiRecord);
 
 
 /**
@@ -232,7 +232,7 @@ router.post('/koi-record', addKoiRecord);
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/KoiFishRecord'
+ *                 $ref: '#/components/schemas/KoiRecord'
  *       500:
  *         description: Server error
  */

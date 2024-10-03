@@ -1,4 +1,4 @@
-import Pond from '../models/pond.model.js';
+import Pond from '../models/Pond.model.js';
 
 export const createPond = async (req, res) => {
   try {

@@ -1,8 +1,8 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../database/db.js';
-import KoiFish from './KoiFish.model.js';  
+import KoiFish from './Koifish.model.js';  
 
-const KoiRecord = sequelize.define('KoiRecord', {
+const koiRecord = sequelize.define('KoiRecord', {
   koiRecordId: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
@@ -68,11 +68,11 @@ const KoiRecord = sequelize.define('KoiRecord', {
       // Calculate food percentage based on age
       let foodPercentage;
       if (record.age <= 12) {
-        foodPercentage = 0.025; // 2.5% for young koi
+        foodPercentage = 0.025; 
       } else if (record.age <= 24) {
-        foodPercentage = 0.0175; // 1.75% for adult koi
+        foodPercentage = 0.0175; 
       } else {
-        foodPercentage = 0.0125; // 1.25% for old koi
+        foodPercentage = 0.0125; 
       }
 
       // Calculate food requirement
@@ -82,7 +82,7 @@ const KoiRecord = sequelize.define('KoiRecord', {
 });
 
 // Associate KoiRecord with KoiFish
-KoiRecord.belongsTo(KoiFish, { foreignKey: 'fishId' });
-KoiFish.hasMany(KoiRecord, { foreignKey: 'fishId' });
+koiRecord.belongsTo(KoiFish, { foreignKey: 'fishId' });
+KoiFish.hasMany(koiRecord, { foreignKey: 'fishId' });
 
-export default KoiRecord;
+export default koiRecord;
