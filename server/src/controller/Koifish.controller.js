@@ -1,6 +1,7 @@
 import KoiFish from '../models/Koifish.model.js';
-import Pond from '../models/Pond.model.js'
+import Pond from '../models/Pond.model.js';
 import KoiRecord from '../models/KoiRecord.model.js';
+
 export const addKoi = async (req, res) => {
   try {
     const { koiName, koiImage, koiGender, koiBreed, koiOrigin, price, currentPondId } = req.body;
@@ -11,8 +12,8 @@ export const addKoi = async (req, res) => {
     }
 
     // Check if the pond exists
-    const Pond = await Pond.findByPk(currentPondId);
-    if (!Pond) {
+    const pond = await Pond.findByPk(currentPondId); // Rename to avoid conflict
+    if (!pond) {
       return res.status(400).json({ success: false, message: 'Invalid pond ID' });
     }
 
@@ -41,6 +42,10 @@ export const addKoi = async (req, res) => {
     });
   }
 };
+
+
+
+
 export const getAllKoi = async (req, res) => {
   try {
     const kois = await KoiFish.findAll();
@@ -148,7 +153,12 @@ export const deleteKoi = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Koi fish not found' });
     }
 
-    // Delete the koi fish
+    // First, delete all related koi records
+    await KoiRecord.destroy({
+      where: { fishId: fishId }
+    });
+
+    // Then, delete the koi fish
     await koi.destroy();
 
     res.status(200).json({
@@ -164,6 +174,5 @@ export const deleteKoi = async (req, res) => {
     });
   }
 };
-
 
 
