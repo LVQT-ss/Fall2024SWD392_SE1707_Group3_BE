@@ -138,4 +138,32 @@ export const getAllKoiRecord = async (req, res) => {
   }
 };
 
+export const deleteKoi = async (req, res) => {
+  try {
+    const { fishId } = req.params; // Extract koi fish ID from route params
+
+    // Check if the koi fish exists
+    const koi = await KoiFish.findByPk(fishId);
+    if (!koi) {
+      return res.status(404).json({ success: false, message: 'Koi fish not found' });
+    }
+
+    // Delete the koi fish
+    await koi.destroy();
+
+    res.status(200).json({
+      success: true,
+      message: 'Koi fish deleted successfully',
+    });
+  } catch (error) {
+    console.error('Error deleting Koi fish:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete Koi fish',
+      error: error.message,
+    });
+  }
+};
+
+
 
