@@ -56,6 +56,44 @@ export const getAllKoi = async (req, res) => {
 
 
 
+export const updateKoi = async (req, res) => {
+  try {
+    const { fishId } = req.params; // Extract koi fish ID from route params
+    const { koiName, koiImage, koiGender, koiBreed, koiOrigin, price, currentPondId } = req.body; // Extract fields to update
+
+    // Check if the koi fish exists
+    const koi = await KoiFish.findByPk(fishId);
+    if (!koi) {
+      return res.status(404).json({ success: false, message: 'Koi fish not found' });
+    }
+
+    // Update koi fish details
+    await koi.update({
+      koiName: koiName || koi.koiName,
+      koiImage: koiImage || koi.koiImage,
+      koiGender: koiGender || koi.koiGender,
+      koiBreed: koiBreed || koi.koiBreed,
+      koiOrigin: koiOrigin || koi.koiOrigin,
+      price: price || koi.price,
+      currentPondId: currentPondId || koi.currentPondId,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Koi fish updated successfully',
+      data: koi,
+    });
+  } catch (error) {
+    console.error('Error updating Koi fish:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update Koi fish',
+      error: error.message,
+    });
+  }
+};
+
+
 
   //// KOI RECORD 
 // Add a new record for a Koi fish
