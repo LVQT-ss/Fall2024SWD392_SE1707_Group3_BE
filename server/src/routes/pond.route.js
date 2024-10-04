@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPond } from '../controller/pond.controller.js';
+import { createPond , getAllPonds,  updatePond , deletePond} from '../controller/pond.controller.js';
 import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = express.Router();
@@ -96,5 +96,101 @@ const router = express.Router();
  *         description: Server error
  */
 router.post('/createPond', verifyToken, createPond);
+
+/**
+ * @swagger
+ * /api/pond/getAllPonds:
+ *   get:
+ *     tags:
+ *     - Pond Controller
+ *     summary: Get all ponds for the authenticated user
+ *     security:
+ *       - Authorization: []
+ *     responses:
+ *       200:
+ *         description: List of ponds retrieved successfully
+ *       401:
+ *         description: Unauthorized - Invalid or missing token
+ *       500:
+ *         description: Server error
+ */
+router.get('/getAllPonds', verifyToken, getAllPonds);
+
+/**
+ * @swagger
+ * /api/pond/updatePond/{id}:
+ *   put:
+ *     tags:
+ *     - Pond Controller
+ *     summary: Update an existing pond
+ *     security:
+ *       - Authorization: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the pond to update
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               pondName:
+ *                 type: string
+ *               pondImage:
+ *                 type: string
+ *               pondSize:
+ *                 type: number
+ *               pondDepth:
+ *                 type: number
+ *               pondVolume:
+ *                 type: number
+ *               pondDrains:
+ *                 type: integer
+ *               pondAeroCapacity:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Pond updated successfully
+ *       400:
+ *         description: Bad Request - Invalid input
+ *       404:
+ *         description: Pond not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/updatePond/:id', verifyToken, updatePond);
+
+/**
+ * @swagger
+ * /api/pond/deletePond/{id}:
+ *   delete:
+ *     tags:
+ *     - Pond Controller
+ *     summary: Delete an existing pond
+ *     security:
+ *       - Authorization: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the pond to delete
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Pond deleted successfully
+ *       404:
+ *         description: Pond not found
+ *       500:
+ *         description: Server error
+ */
+router.delete('/deletePond/:id', verifyToken, deletePond);
+
+
 
 export default router;
