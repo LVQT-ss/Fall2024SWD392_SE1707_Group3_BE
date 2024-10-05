@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPond , getAllPonds,  updatePond , deletePond,deletePondByOwner} from '../controller/pond.controller.js';
+import { createPond , getAllPondsByUser,  updatePond , deletePond,deletePondByOwner,getAllPonds} from '../controller/pond.controller.js';
 import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = express.Router();
@@ -99,7 +99,7 @@ router.post('/createPond', verifyToken, createPond);
 
 /**
  * @swagger
- * /api/pond/getAllPonds:
+ * /api/pond/getAllPondsByUser:
  *   get:
  *     tags:
  *     - Pond Controller
@@ -114,7 +114,7 @@ router.post('/createPond', verifyToken, createPond);
  *       500:
  *         description: Server error
  */
-router.get('/getAllPonds', verifyToken, getAllPonds);
+router.get('/getAllPondsByUser', verifyToken, getAllPondsByUser);
 
 /**
  * @swagger
@@ -219,6 +219,109 @@ router.delete('/deletePond/:id', verifyToken, deletePond);
  */
 router.delete('/deletePondByOwner/:id', verifyToken, deletePondByOwner);
 
-
+/**
+ * @swagger
+ * /api/pond/getAllPonds:
+ *   get:
+ *     tags:
+ *       - Pond Controller
+ *     summary: Retrieve all Ponds
+ *     description: Get a list of all ponds with their details and associated user information
+ *     security:
+ *       - Authorization: []
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved ponds
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       pondId:
+ *                         type: integer
+ *                         description: The pond's ID
+ *                         example: 1
+ *                       pondName:
+ *                         type: string
+ *                         description: Name of the pond
+ *                         example: "Koi Paradise"
+ *                       pondImage:
+ *                         type: string
+ *                         description: URL of the pond image
+ *                         example: "https://example.com/pond-image.jpg"
+ *                       pondSize:
+ *                         type: number
+ *                         format: float
+ *                         description: Size of the pond
+ *                         example: 100.5
+ *                       pondDepth:
+ *                         type: number
+ *                         format: float
+ *                         description: Depth of the pond
+ *                         example: 2.5
+ *                       pondVolume:
+ *                         type: number
+ *                         format: float
+ *                         description: Volume of the pond
+ *                         example: 251.25
+ *                       pondDrains:
+ *                         type: integer
+ *                         description: Number of drains in the pond
+ *                         example: 2
+ *                       pondAeroCapacity:
+ *                         type: number
+ *                         format: float
+ *                         description: Aeration capacity of the pond
+ *                         example: 50.0
+ *                       userId:
+ *                         type: integer
+ *                         description: ID of the pond owner
+ *                         example: 1
+ *                       User:
+ *                         type: object
+ *                         properties:
+ *                           username:
+ *                             type: string
+ *                             description: Username of the pond owner
+ *                             example: "john_doe"
+ *                           email:
+ *                             type: string
+ *                             description: Email of the pond owner
+ *                             example: "john@example.com"
+ *                           usertype:
+ *                             type: string
+ *                             description: Type of user
+ *                             enum: [Admin, Shop, Staff, Customer]
+ *                             example: "Customer"
+ *                           userStatus:
+ *                             type: string
+ *                             description: Status of the user
+ *                             example: "Active"
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: "Failed to fetch ponds"
+ *                 error:
+ *                   type: string
+ *                   example: "Internal server error"
+ */
+router.get('/getAllPonds', verifyToken, getAllPonds);
 
 export default router;

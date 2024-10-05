@@ -1,5 +1,5 @@
 import Pond from '../models/Pond.model.js';
-
+import User from '../models/user.models.js';
 // Create a new pond (Already Implemented)
 export const createPond = async (req, res) => {
   try {
@@ -34,7 +34,7 @@ export const createPond = async (req, res) => {
 };
 
 // Get all ponds for a user
-export const getAllPonds = async (req, res) => {
+export const getAllPondsByUser = async (req, res) => {
   try {
     const userId = req.userId;
     const ponds = await Pond.findAll({ where: { userId } });
@@ -157,5 +157,15 @@ export const deletePondByOwner = async (req, res) => {
       message: 'Failed to delete pond',
       error: error.message
     });
+  }
+};
+
+export const getAllPonds = async (req, res) => {
+  try {
+    const pond = await Pond.findAll();
+    res.json(pond);
+  } catch (err) {
+    console.error('Error fetching users:', err);
+    res.status(500).send(err.message);
   }
 };
