@@ -1,5 +1,5 @@
 import express from 'express';
-import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord ,updateKoi,deleteKoi,deleteKoiByUser} from "../controller/Koifish.controller.js"
+import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord ,updateKoi,deleteKoi,deleteKoiByUser,getAllKoiByUser} from "../controller/Koifish.controller.js"
 import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = express.Router();
@@ -100,7 +100,7 @@ router.post('/addKoi', verifyToken, addKoi);
  * /api/koi/getAllKoi:
  *   get:
  *     tags:
- *       - Koi Fish Controller
+ *       - Admin Controller
  *     summary: Retrieve all koi
  *     security:
  *       - Authorization: []
@@ -368,6 +368,29 @@ router.delete('/deleteKoi/:fishId', verifyToken, deleteKoi);
  *         description: Server error
  */
 router.delete('/deleteKoiByUser/:fishId', verifyToken, deleteKoiByUser);
+
+/**
+ * @swagger
+ * /api/koi/getAllKoiByUser:
+ *   get:
+ *     tags:
+ *       - Koi Fish Controller
+ *     summary: Retrieve all koi record
+ *     security:
+ *       - Authorization: []
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved koi fish record
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/KoiRecord'
+ *       500:
+ *         description: Server error
+ */
+router.get('/getAllKoiByUser', verifyToken, getAllKoiByUser);
 
 
 export default router;

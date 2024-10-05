@@ -250,3 +250,36 @@ export const deleteKoiByUser = async (req, res) => {
     });
   }
 };
+
+// Get all Koi fish owned by a specific user
+export const getAllKoiByUser = async (req, res) => {
+  try {
+    const userId = req.userId; // Extract userId from the verifyToken middleware
+
+    // Find all koi fish that belong to the user
+    const userKoiFish = await KoiFish.findAll({
+      where: { userId: userId }
+    });
+
+    // Check if any koi fish are found for the user
+    if (userKoiFish.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'No koi fish found for this user',
+      });
+    }
+
+    // Return the list of koi fish owned by the user
+    res.status(200).json({
+      success: true,
+      data: userKoiFish,
+    });
+  } catch (error) {
+    console.error('Error fetching koi fish for user:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch koi fish for user',
+      error: error.message,
+    });
+  }
+};
