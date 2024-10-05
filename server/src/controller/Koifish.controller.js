@@ -1,6 +1,7 @@
-import KoiFish from '../models/KoiFish.model.js';
+import KoiFish from '../models/Koifish.model.js';
 import Pond from '../models/Pond.model.js';
 import KoiRecord from '../models/KoiRecord.model.js';
+
 export const addKoi = async (req, res) => {
   try {
     const { koiName, koiImage, koiGender, koiBreed, koiOrigin, price, currentPondId } = req.body;
@@ -11,7 +12,7 @@ export const addKoi = async (req, res) => {
     }
 
     // Check if the pond exists
-    const pond = await Pond.findByPk(currentPondId);
+    const pond = await Pond.findByPk(currentPondId); // Rename to avoid conflict
     if (!pond) {
       return res.status(400).json({ success: false, message: 'Invalid pond ID' });
     }
@@ -41,6 +42,10 @@ export const addKoi = async (req, res) => {
     });
   }
 };
+
+
+
+
 export const getAllKoi = async (req, res) => {
   try {
     const kois = await KoiFish.findAll();
@@ -54,6 +59,44 @@ export const getAllKoi = async (req, res) => {
   }
 };
 
+
+
+export const updateKoi = async (req, res) => {
+  try {
+    const { fishId } = req.params; // Extract koi fish ID from route params
+    const { koiName, koiImage, koiGender, koiBreed, koiOrigin, price, currentPondId } = req.body; // Extract fields to update
+
+    // Check if the koi fish exists
+    const koi = await KoiFish.findByPk(fishId);
+    if (!koi) {
+      return res.status(404).json({ success: false, message: 'Koi fish not found' });
+    }
+
+    // Update koi fish details
+    await koi.update({
+      koiName: koiName || koi.koiName,
+      koiImage: koiImage || koi.koiImage,
+      koiGender: koiGender || koi.koiGender,
+      koiBreed: koiBreed || koi.koiBreed,
+      koiOrigin: koiOrigin || koi.koiOrigin,
+      price: price || koi.price,
+      currentPondId: currentPondId || koi.currentPondId,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Koi fish updated successfully',
+      data: koi,
+    });
+  } catch (error) {
+    console.error('Error updating Koi fish:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update Koi fish',
+      error: error.message,
+    });
+  }
+};
 
 
 
@@ -97,6 +140,38 @@ export const getAllKoiRecord = async (req, res) => {
   } catch (err) {
     console.error('Error fetching koi fish record:', err);
     res.status(500).json({ success: false, message: 'Failed to fetch koi fish record', error: err.message });
+  }
+};
+
+export const deleteKoi = async (req, res) => {
+  try {
+    const { fishId } = req.params; // Extract koi fish ID from route params
+
+    // Check if the koi fish exists
+    const koi = await KoiFish.findByPk(fishId);
+    if (!koi) {
+      return res.status(404).json({ success: false, message: 'Koi fish not found' });
+    }
+
+    // First, delete all related koi records
+    await KoiRecord.destroy({
+      where: { fishId: fishId }
+    });
+
+    // Then, delete the koi fish
+    await koi.destroy();
+
+    res.status(200).json({
+      success: true,
+      message: 'Koi fish deleted successfully',
+    });
+  } catch (error) {
+    console.error('Error deleting Koi fish:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete Koi fish',
+      error: error.message,
+    });
   }
 };
 

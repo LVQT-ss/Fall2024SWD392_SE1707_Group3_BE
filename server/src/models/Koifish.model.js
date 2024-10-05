@@ -37,7 +37,7 @@ const KoiFish = sequelize.define('KoiFish', {
   timestamps: false,
 });
 
-// Quan hệ giữa KoiFish và Pond
+// KoiFish and  Pond relationship
 KoiFish.belongsTo(Pond, { foreignKey: 'currentPondId' });
 Pond.hasMany(KoiFish, { foreignKey: 'currentPondId' });
 

@@ -1,5 +1,5 @@
 import express from 'express';
-import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord } from '../controller/Koifish.controller.js';
+import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord ,updateKoi,deleteKoi} from "../controller/Koifish.controller.js"
 import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = express.Router();
@@ -212,7 +212,7 @@ router.get('/getAllKoi', verifyToken, getAllKoi);
  *         foodRequire:
  *           type: number
  */
-router.post('/koi-record', addKoiRecord);
+router.post('/koi-record', verifyToken,addKoiRecord);
 
 
 /**
@@ -232,11 +232,88 @@ router.post('/koi-record', addKoiRecord);
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/KoiFishRecord'
+ *                 $ref: '#/components/schemas/KoiRecord'
  *       500:
  *         description: Server error
  */
 router.get('/getAllKoiRecord', verifyToken, getAllKoiRecord);
+
+/**
+ * @swagger
+ * /api/koi/updateKoi/{fishId}:
+ *   put:
+ *     tags:
+ *       - Koi Fish Controller
+ *     summary: Update an existing Koi fish
+ *     description: Update koi fish details based on fishId
+ *     security:
+ *       - Authorization: []
+ *     parameters:
+ *       - in: path
+ *         name: fishId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The koi fish ID to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               koiName:
+ *                 type: string
+ *               koiImage:
+ *                 type: string
+ *               koiGender:
+ *                 type: string
+ *               koiBreed:
+ *                 type: integer
+ *               koiOrigin:
+ *                 type: number
+ *                 format: float
+ *               price:
+ *                 type: number
+ *                 format: float
+ *               currentPondId:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Koi fish updated successfully
+ *       404:
+ *         description: Koi fish not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/updateKoi/:fishId', verifyToken, updateKoi);
+
+/**
+ * @swagger
+ * /api/koi/deleteKoi/{fishId}:
+ *   delete:
+ *     tags:
+ *       - Koi Fish Controller
+ *     summary: Delete an existing Koi fish
+ *     description: Delete koi fish based on fishId
+ *     security:
+ *       - Authorization: []
+ *     parameters:
+ *       - in: path
+ *         name: fishId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The koi fish ID to delete
+ *     responses:
+ *       200:
+ *         description: Koi fish deleted successfully
+ *       404:
+ *         description: Koi fish not found
+ *       500:
+ *         description: Server error
+ */
+router.delete('/deleteKoi/:fishId', verifyToken, deleteKoi);
 
 
 export default router;
