@@ -4,7 +4,9 @@ import Pond from '../models/Pond.model.js';
 export const createPond = async (req, res) => {
   try {
     const { pondName, pondImage, pondSize, pondDepth, pondVolume, pondDrains, pondAeroCapacity } = req.body;
+
     const userId = req.userId; // From verifyToken middleware
+
 
     const newPond = await Pond.create({
       userId,
