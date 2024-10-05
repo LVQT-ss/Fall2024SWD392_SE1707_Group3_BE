@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPond , getAllPonds,  updatePond , deletePond} from '../controller/pond.controller.js';
+import { createPond , getAllPonds,  updatePond , deletePond,deletePondByOwner} from '../controller/pond.controller.js';
 import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = express.Router();
@@ -190,6 +190,34 @@ router.put('/updatePond/:id', verifyToken, updatePond);
  *         description: Server error
  */
 router.delete('/deletePond/:id', verifyToken, deletePond);
+// New route for owner/admin deletion
+/**
+ * @swagger
+ * /api/pond/deletePondByOwner/{id}:
+ *   delete:
+ *     tags:
+ *     - Pond Controller
+ *     summary: Delete a pond (only by owner or admin)
+ *     security:
+ *       - Authorization: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the pond to delete
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Pond deleted successfully
+ *       403:
+ *         description: Unauthorized - User is not the owner or admin
+ *       404:
+ *         description: Pond not found
+ *       500:
+ *         description: Server error
+ */
+router.delete('/deletePondByOwner/:id', verifyToken, deletePondByOwner);
 
 
 

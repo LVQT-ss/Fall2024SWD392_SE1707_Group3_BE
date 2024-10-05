@@ -109,3 +109,53 @@ export const deletePond = async (req, res) => {
     });
   }
 };
+
+
+
+
+// New method specifically for owner/admin deletion
+export const deletePondByOwner = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.userId; // From verifyToken middleware
+
+    // Find the pond
+    const pond = await Pond.findByPk(id);
+    if (!pond) {
+      return res.status(404).json({
+        success: false,
+        message: 'Pond not found'
+      });
+    }
+
+    // Get the user making the request
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Check if user is Admin or pond owner
+    if (user.usertype !== 'Admin' && pond.userId !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: 'Unauthorized: You can only delete your own ponds'
+      });
+    }
+
+    await pond.destroy();
+
+    res.status(200).json({
+      success: true,
+      message: 'Pond deleted successfully'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete pond',
+      error: error.message
+    });
+  }
+};
