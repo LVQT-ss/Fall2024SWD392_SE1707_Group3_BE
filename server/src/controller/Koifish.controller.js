@@ -1,43 +1,76 @@
 import KoiFish from '../models/Koifish.model.js';
 import Pond from '../models/Pond.model.js';
 import KoiRecord from '../models/KoiRecord.model.js';
+import User from '../models/user.models.js';
 
 export const addKoi = async (req, res) => {
   try {
-    const { koiName, koiImage, koiGender, koiBreed, koiOrigin, price, currentPondId } = req.body;
-
-    // Validate required fields
-    if (!koiName || !currentPondId) {
-      return res.status(400).json({ success: false, message: 'Koi name and current pond ID are required' });
-    }
-
-    // Check if the pond exists
-    const pond = await Pond.findByPk(currentPondId); // Rename to avoid conflict
-    if (!pond) {
-      return res.status(400).json({ success: false, message: 'Invalid pond ID' });
-    }
-
-    // Create new Koi fish
-    const newKoi = await KoiFish.create({
-      koiName,
+    const userId = req.userId; // From verifyToken middleware
+    const { 
+      koiName, 
+      koiBreed, 
+      koiGender, 
       koiImage,
-      koiGender,
+      currentPondId  // Match this to your model foreign key
+    } = req.body;
+
+    // Validate that required fields are provided
+    if (!koiName || !currentPondId) {
+      return res.status(400).json({
+        success: false,
+        message: 'koiName and currentPondId are required.'
+      });
+    }
+
+    // Check if pond exists and belongs to the user
+    const pond = await Pond.findOne({
+      where: {
+        pondId: currentPondId,
+        userId: userId
+      }
+    });
+
+    if (!pond) {
+      return res.status(404).json({
+        success: false,
+        message: 'No available pond found. Please create a pond first or specify a valid pond.'
+      });
+    }
+
+    // Optional: Check if pond has capacity (you can add your own logic here)
+    const currentKoiCount = await KoiFish.count({
+      where: { currentPondId: currentPondId }
+    });
+
+    // Example capacity calculation (adjust based on your requirements)
+    const maxCapacity = Math.floor(pond.pondVolume / 100); // Assuming each koi needs 100 units of volume
+    if (currentKoiCount >= maxCapacity) {
+      return res.status(400).json({
+        success: false,
+        message: `Pond has reached its maximum capacity of ${maxCapacity} koi fish.`
+      });
+    }
+
+    // Create the koi fish
+    const newKoiFish = await KoiFish.create({
+      koiName,
       koiBreed,
-      koiOrigin,
-      price,
-      currentPondId
+      koiGender,
+      koiImage,
+      currentPondId,
+      userId
     });
 
     res.status(201).json({
       success: true,
       message: 'Koi fish added successfully',
-      data: newKoi
+      data: newKoiFish
     });
+
   } catch (error) {
-    console.error('Error adding Koi fish:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to add Koi fish',
+      message: 'Failed to add koi fish',
       error: error.message
     });
   }

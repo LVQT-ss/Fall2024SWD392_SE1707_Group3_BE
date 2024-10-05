@@ -170,7 +170,7 @@ router.put('/updatePond/:id', verifyToken, updatePond);
  * /api/pond/deletePond/{id}:
  *   delete:
  *     tags:
- *     - Pond Controller
+ *     - Admin Controller
  *     summary: Delete an existing pond
  *     security:
  *       - Authorization: []
@@ -224,7 +224,7 @@ router.delete('/deletePondByOwner/:id', verifyToken, deletePondByOwner);
  * /api/pond/getAllPonds:
  *   get:
  *     tags:
- *       - Pond Controller
+ *       - Admin Controller
  *     summary: Retrieve all Ponds
  *     description: Get a list of all ponds with their details and associated user information
  *     security:
