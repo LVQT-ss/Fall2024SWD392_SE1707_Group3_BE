@@ -24,7 +24,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/pond', pondRoutes);
 app.use('/api/koi', koiRoutes);
-app.use('/api/blog', blogRoutes); // Register blog routes
+app.use('/api/blog', blogRoutes); 
 
 // Initialize and synchronize the database
 initDB().then(() => {
