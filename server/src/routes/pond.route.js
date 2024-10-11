@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPond , getAllPondsByUser,  updatePond , deletePond,deletePondByOwner,getAllPonds} from '../controller/pond.controller.js';
+import { createPond , getAllPondsByUser,  updatePond , deletePond,deletePondByOwner,getAllPonds,getPondById} from '../controller/pond.controller.js';
 import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = express.Router();
@@ -323,5 +323,85 @@ router.delete('/deletePondByOwner/:id', verifyToken, deletePondByOwner);
  *                   example: "Internal server error"
  */
 router.get('/getAllPonds', verifyToken, getAllPonds);
+
+
+// Router configuration (add to pond.routes.js)
+/**
+ * @swagger
+ * /api/pond/getPondById/{id}:
+ *   get:
+ *     tags:
+ *       - Pond Controller
+ *     summary: Retrieve a specific pond by ID
+ *     description: Get detailed information about a specific pond including capacity information
+ *     security:
+ *       - Authorization: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the pond to retrieve
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved pond
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     pondId:
+ *                       type: integer
+ *                       example: 1
+ *                     pondName:
+ *                       type: string
+ *                       example: "Koi Paradise"
+ *                     pondImage:
+ *                       type: string
+ *                       example: "https://example.com/pond-image.jpg"
+ *                     pondSize:
+ *                       type: number
+ *                       format: float
+ *                       example: 100.5
+ *                     pondDepth:
+ *                       type: number
+ *                       format: float
+ *                       example: 2.5
+ *                     pondVolume:
+ *                       type: number
+ *                       format: float
+ *                       example: 251.25
+ *                     pondDrains:
+ *                       type: integer
+ *                       example: 2
+ *                     pondAeroCapacity:
+ *                       type: number
+ *                       format: float
+ *                       example: 50.0
+ *                     maxCapacity:
+ *                       type: integer
+ *                       example: 25
+ *                     remainingCapacity:
+ *                       type: integer
+ *                       example: 15
+ *                     currentKoiCount:
+ *                       type: integer
+ *                       example: 10
+ *       403:
+ *         description: Unauthorized - User doesn't have permission to view this pond
+ *       404:
+ *         description: Pond not found
+ *       500:
+ *         description: Server error
+ */
+router.get('/getPondById/:id', verifyToken, getPondById);
+
 
 export default router;

@@ -169,3 +169,76 @@ export const getAllPonds = async (req, res) => {
     res.status(500).send(err.message);
   }
 };
+
+// Controller function (add to pond.controller.js)
+export const getPondById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.userId; // From verifyToken middleware
+    
+    // Find the pond with koi fish count
+    const pond = await Pond.findOne({
+      where: { pondId: id },
+      attributes: [
+        'pondId',
+        'pondName',
+        'pondImage',
+        'pondSize',
+        'pondDepth',
+        'pondVolume',
+        'pondDrains',
+        'pondAeroCapacity'
+      ],
+      
+      group: ['Pond.pondId']
+    });
+
+    // Check if pond exists
+    if (!pond) {
+      return res.status(404).json({
+        success: false,
+        message: 'Pond not found'
+      });
+    }
+
+    // Check authorization (allow access only to admin or pond owner)
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    if (user.usertype !== 'Admin' && pond.userId !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: 'You do not have permission to view this pond'
+      });
+    }
+
+    // Calculate remaining capacity
+    const maxCapacity = Math.floor(pond.pondVolume / 100); // Assuming each koi needs 100 units of volume
+    const remainingCapacity = maxCapacity - (pond.getDataValue('KoiFishes.koiCount') || 0);
+
+    // Format the response
+    const response = {
+      ...pond.toJSON(),
+      maxCapacity,
+      remainingCapacity,
+      currentKoiCount: pond.getDataValue('KoiFishes.koiCount') || 0
+    };
+
+    res.status(200).json({
+      success: true,
+      data: response
+    });
+  } catch (error) {
+    console.error('Error fetching pond:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch pond',
+      error: error.message
+    });
+  }
+};

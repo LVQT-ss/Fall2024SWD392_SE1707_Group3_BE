@@ -10,21 +10,21 @@ const Blog = sequelize.define('Blog', {
   },
   blogTitle: {
     type: DataTypes.STRING,
-    allowNull: false,  // Không cho phép để trống
+    allowNull: false,  
   },
   blogContent: {
-    type: DataTypes.TEXT,  // Định nghĩa blogContent là TEXT vì nội dung có thể dài
+    type: DataTypes.TEXT,  
     allowNull: false,
   },
   blogDate: {
     type: DataTypes.DATE,
     allowNull: false,
-    defaultValue: DataTypes.NOW,  // Tự động gán ngày giờ hiện tại khi tạo blog
+    defaultValue: DataTypes.NOW,  
   },
   blogStatus: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
-    defaultValue: true,  // Mặc định là true (blog đang hoạt động)
+    defaultValue: true,  
   },
 }, {
   tableName: 'blog',

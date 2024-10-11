@@ -283,3 +283,59 @@ export const getAllKoiByUser = async (req, res) => {
     });
   }
 };
+// Controller function (add to Koifish.controller.js)
+export const getKoiFishById = async (req, res) => {
+  try {
+    const { fishId } = req.params;
+    const userId = req.userId; // From verifyToken middleware
+    
+    // Find the koi fish by ID with associated pond data
+    const koiFish = await KoiFish.findOne({
+      where: { fishId: fishId },
+     
+      attributes: [
+        'fishId',
+        'koiName',
+        'koiImage',
+        'koiGender',
+        'koiBreed',
+        'koiOrigin',
+        'price',
+        'currentPondId'
+      ]
+    });
+
+    // Check if koi fish exists
+    if (!koiFish) {
+      return res.status(404).json({
+        success: false,
+        message: 'Koi fish not found'
+      });
+    }
+
+    // If user is not admin, check if they own the koi fish
+    // We need to query the full koi fish data (including userId) for this check
+    const koiFishWithUser = await KoiFish.findByPk(fishId, {
+      attributes: ['userId']
+    });
+
+    if (req.usertype !== 'Admin' && koiFishWithUser.userId !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: 'You do not have permission to view this koi fish'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: koiFish
+    });
+  } catch (error) {
+    console.error('Error fetching koi fish:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch koi fish',
+      error: error.message
+    });
+  }
+};
