@@ -22,15 +22,15 @@ const KoiFish = sequelize.define('KoiFish', {
     allowNull: true,
   },
   koiBreed: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING(20),
     allowNull: true,
   },
   koiOrigin: {
-    type: DataTypes.DECIMAL(5, 2),
+    type: DataTypes.STRING(20),
     allowNull: true,
   },
   price: {
-    type: DataTypes.DECIMAL(5, 2),
+    type: DataTypes.INTEGER,
     allowNull: true,
   },
 }, {

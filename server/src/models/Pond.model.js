@@ -36,12 +36,16 @@ const Pond = sequelize.define('Pond', {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
   },
+  pondCapacityOfKoiFish: {  // New attribute
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
 }, {
   tableName: 'pond',
   timestamps: false,
 });
 
-// Quan hệ giữa Pond và User
+// Relationship between Pond and User
 Pond.belongsTo(User, { foreignKey: 'userId' });
 User.hasMany(Pond, { foreignKey: 'userId' });
 

@@ -53,6 +53,9 @@ const router = express.Router();
  *                 type: number
  *                 format: float
  *                 example: 50.0
+ *               pondCapacityOfKoiFish:
+ *                 type: integer
+ *                 example: 20               
  *     responses:
  *       201:
  *         description: Pond created successfully
@@ -153,6 +156,8 @@ router.get('/getAllPondsByUser', verifyToken, getAllPondsByUser);
  *                 type: integer
  *               pondAeroCapacity:
  *                 type: number
+ *               pondCapacityOfKoiFish:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Pond updated successfully

@@ -5,16 +5,16 @@ import User from '../models/user.models.js';
 
 export const addKoi = async (req, res) => {
   try {
-    const userId = req.userId; // From verifyToken middleware
+    const userId = req.userId;
     const { 
       koiName, 
       koiBreed, 
       koiGender, 
       koiImage,
-      currentPondId  // Match this to your model foreign key
+      currentPondId
     } = req.body;
 
-    // Validate that required fields are provided
+    // Validate required fields
     if (!koiName || !currentPondId) {
       return res.status(400).json({
         success: false,
@@ -37,17 +37,24 @@ export const addKoi = async (req, res) => {
       });
     }
 
-    // Optional: Check if pond has capacity (you can add your own logic here)
+    // Get current number of koi in the pond
     const currentKoiCount = await KoiFish.count({
       where: { currentPondId: currentPondId }
     });
 
-    // Example capacity calculation (adjust based on your requirements)
-    const maxCapacity = Math.floor(pond.pondVolume / 100); // Assuming each koi needs 100 units of volume
-    if (currentKoiCount >= maxCapacity) {
+    // Check if pond has reached its capacity
+    const maxCapacity = pond.pondCapacityOfKoiFish;
+    const remainingSlots = maxCapacity - currentKoiCount;
+
+    if (remainingSlots <= 0) {
       return res.status(400).json({
         success: false,
-        message: `Pond has reached its maximum capacity of ${maxCapacity} koi fish.`
+        message: `Pond has reached its maximum capacity of ${maxCapacity} koi fish.`,
+        pondCapacity: {
+          maxCapacity,
+          currentCount: currentKoiCount,
+          remainingSlots: 0
+        }
       });
     }
 
@@ -64,7 +71,12 @@ export const addKoi = async (req, res) => {
     res.status(201).json({
       success: true,
       message: 'Koi fish added successfully',
-      data: newKoiFish
+      data: newKoiFish,
+      pondCapacity: {
+        maxCapacity,
+        currentCount: currentKoiCount + 1,
+        remainingSlots: remainingSlots - 1
+      }
     });
 
   } catch (error) {

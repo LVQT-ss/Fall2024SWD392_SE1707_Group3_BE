@@ -1,12 +1,13 @@
 import Pond from '../models/Pond.model.js';
 import User from '../models/user.models.js';
-// Create a new pond (Already Implemented)
+
+
+// Create a new pond
 export const createPond = async (req, res) => {
   try {
-    const { pondName, pondImage, pondSize, pondDepth, pondVolume, pondDrains, pondAeroCapacity } = req.body;
+    const { pondName, pondImage, pondSize, pondDepth, pondVolume, pondDrains, pondAeroCapacity, pondCapacityOfKoiFish } = req.body;
 
     const userId = req.userId; // From verifyToken middleware
-
 
     const newPond = await Pond.create({
       userId,
@@ -16,7 +17,8 @@ export const createPond = async (req, res) => {
       pondDepth,
       pondVolume,
       pondDrains,
-      pondAeroCapacity
+      pondAeroCapacity,
+      pondCapacityOfKoiFish
     });
 
     res.status(201).json({
@@ -32,6 +34,7 @@ export const createPond = async (req, res) => {
     });
   }
 };
+
 
 // Get all ponds for a user
 export const getAllPondsByUser = async (req, res) => {
@@ -52,11 +55,12 @@ export const getAllPondsByUser = async (req, res) => {
   }
 };
 
+
 // Update a pond by ID
 export const updatePond = async (req, res) => {
   try {
     const { id } = req.params;
-    const { pondName, pondImage, pondSize, pondDepth, pondVolume, pondDrains, pondAeroCapacity } = req.body;
+    const { pondName, pondImage, pondSize, pondDepth, pondVolume, pondDrains, pondAeroCapacity, pondCapacityOfKoiFish } = req.body;
 
     const pond = await Pond.findByPk(id);
     if (!pond) {
@@ -66,7 +70,7 @@ export const updatePond = async (req, res) => {
       });
     }
 
-    await pond.update({ pondName, pondImage, pondSize, pondDepth, pondVolume, pondDrains, pondAeroCapacity });
+    await pond.update({ pondName, pondImage, pondSize, pondDepth, pondVolume, pondDrains, pondAeroCapacity, pondCapacityOfKoiFish });
 
     res.status(200).json({
       success: true,
@@ -170,13 +174,12 @@ export const getAllPonds = async (req, res) => {
   }
 };
 
-// Controller function (add to pond.controller.js)
+// Get pond by ID with koi fish count
 export const getPondById = async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.userId; // From verifyToken middleware
-    
-    // Find the pond with koi fish count
+
     const pond = await Pond.findOne({
       where: { pondId: id },
       attributes: [
@@ -187,10 +190,10 @@ export const getPondById = async (req, res) => {
         'pondDepth',
         'pondVolume',
         'pondDrains',
-        'pondAeroCapacity'
-      ],
-      
-      group: ['Pond.pondId']
+        'pondAeroCapacity',
+        'pondCapacityOfKoiFish',
+        'userId'  // Added userId to check ownership
+      ]
     });
 
     // Check if pond exists
@@ -217,25 +220,15 @@ export const getPondById = async (req, res) => {
       });
     }
 
-    // Calculate remaining capacity
-    const maxCapacity = Math.floor(pond.pondVolume / 100); // Assuming each koi needs 100 units of volume
-    const remainingCapacity = maxCapacity - (pond.getDataValue('KoiFishes.koiCount') || 0);
-
-    // Format the response
-    const response = {
-      ...pond.toJSON(),
-      maxCapacity,
-      remainingCapacity,
-      currentKoiCount: pond.getDataValue('KoiFishes.koiCount') || 0
-    };
-
-    res.status(200).json({
+    // Send the response once with all pond data
+    return res.status(200).json({
       success: true,
-      data: response
+      data: pond
     });
+
   } catch (error) {
     console.error('Error fetching pond:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: 'Failed to fetch pond',
       error: error.message
