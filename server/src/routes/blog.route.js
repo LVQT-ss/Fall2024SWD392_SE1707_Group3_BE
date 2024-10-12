@@ -150,10 +150,10 @@ router.get('/getBlogById/:id', verifyToken,getBlogById);
  *           schema:
  *             type: object
  *             properties:
- *               title:
+ *               blogTitle:
  *                 type: string
  *                 example: Updated Blog Title
- *               content:
+ *               blogContent:
  *                 type: string
  *                 example: Updated blog content
  *     responses:
