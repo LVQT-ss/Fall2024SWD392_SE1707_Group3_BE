@@ -7,7 +7,9 @@ import userRoutes from './src/routes/user.route.js';
 import authRoutes from './src/routes/auth.route.js';
 import pondRoutes from './src/routes/pond.route.js';
 import koiRoutes from './src/routes/koi.route.js';
-import blogRoutes from './src/routes/blog.route.js'; // Import blog routes
+import blogRoutes from './src/routes/blog.route.js'; 
+import waterParaRoutes from './src/routes/waterPara.route.js';
+
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -25,6 +27,7 @@ app.use('/api/user', userRoutes);
 app.use('/api/pond', pondRoutes);
 app.use('/api/koi', koiRoutes);
 app.use('/api/blog', blogRoutes); 
+app.use('/api/waterPara', waterParaRoutes);
 
 // Initialize and synchronize the database
 initDB().then(() => {
