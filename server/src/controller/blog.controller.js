@@ -5,8 +5,6 @@ import User from '../models/user.models.js';
 export const createBlog = async (req, res) => {
   try {
     const { blogTitle, blogContent } = req.body;
-    const x = req.body.title;
-    console.log(x);
     const userId = req.userId;
   if (!blogTitle || !blogContent) {
     return res.status(400).json({ message: 'blogTitle, and blogContent are required' });
@@ -72,9 +70,9 @@ export const getBlogById = async (req, res) => {
 export const updateBlog = async (req, res) => {
   const { id } = req.params;
   const { blogTitle, blogContent, blogStatus } = req.body;
-
+  console.log(blogContent);
   if (!id || (!blogTitle && !blogContent && blogStatus === undefined)) {
-    return res.status(400).json({ message: 'Blog ID, and at least one of blogTitle, blogContent, or blogStatus are required' });
+    return res.status(400).json({ message: 'blogTitle and blogContent are required' });
   }
 
   try {
