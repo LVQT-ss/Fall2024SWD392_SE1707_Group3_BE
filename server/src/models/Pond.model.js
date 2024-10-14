@@ -36,9 +36,10 @@ const Pond = sequelize.define('Pond', {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
   },
-  pondCapacityOfKoiFish: {  // New attribute
+  pondCapacityOfKoiFish: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,  // Changed to allow null values
+    defaultValue: 0,  // Added a default value
   },
 }, {
   tableName: 'pond',
