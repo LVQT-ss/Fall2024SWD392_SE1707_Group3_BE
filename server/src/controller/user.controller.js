@@ -63,6 +63,7 @@ export const updateUser = async (req, res) => {
   }
 };
 
+
 export const deleteUser = async (req, res) => {
   const { userId } = req.params;
 
@@ -77,6 +78,11 @@ export const deleteUser = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
+    // Check if the user type is Admin
+    if (user.usertype === 'Admin') {
+      return res.status(403).json({ message: 'Admin users cannot be deleted' });
+    }
+
     await user.destroy();
     res.json({ message: 'User deleted successfully' });
   } catch (err) {
@@ -84,6 +90,9 @@ export const deleteUser = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
+
+
+
 export const getAllStaff = async (req, res) => {
   try {
     const staffUsers = await User.findAll({
