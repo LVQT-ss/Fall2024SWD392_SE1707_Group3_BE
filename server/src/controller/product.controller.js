@@ -25,4 +25,19 @@ export const createProduct = async (req, res) => {
   }
 };
 
+// Lấy tất cả các sản phẩm
+export const getAllProducts = async (req, res) => {
+  try {
+    const products = await Product.findAll({
+      include: {
+        model: User,
+        attributes: ['userId', 'username'], // Bao gồm thông tin người dùng (User)
+      },
+    });
+    res.status(200).json(products);
+  } catch (err) {
+    console.error('Error fetching products:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
