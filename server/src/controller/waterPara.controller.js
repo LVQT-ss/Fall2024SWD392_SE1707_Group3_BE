@@ -72,33 +72,35 @@ export const getAllWaterParas = async (req, res) => {
   }
 };
 
-// Lấy thông số nước theo pond ID
+// Lấy thông số nước mới nhất theo pond ID
 export const getWaterParaByPondId = async (req, res) => {
-    const { pondId } = req.params; // Lấy pondId từ tham số yêu cầu
+  const { pondId } = req.params; // Lấy pondId từ tham số yêu cầu
   
-    if (!pondId) {
-      return res.status(400).json({ message: 'Pond ID is required' });
+  if (!pondId) {
+    return res.status(400).json({ message: 'Pond ID is required' });
+  }
+
+  try {
+    const waterParam = await WaterPara.findOne({
+      where: { pondId }, // Tìm kiếm thông số nước theo pondId
+      include: {
+        model: Pond,
+        attributes: ['pondId', 'pondName'], // Lấy một số trường từ Pond nếu cần
+      },
+      order: [['recordDate', 'DESC']], // Sắp xếp theo recordDate giảm dần
+      limit: 1, // Giới hạn chỉ trả về một bản ghi (mới nhất)
+    });
+
+    if (!waterParam) {
+      return res.status(404).json({ message: 'No water parameters found for this pond' });
     }
-  
-    try {
-      const waterParams = await WaterPara.findAll({
-        where: { pondId }, // Tìm kiếm thông số nước theo pondId
-        include: {
-          model: Pond,
-          attributes: ['pondId', 'pondName'], // Lấy một số trường từ Pond nếu cần
-        },
-      });
-  
-      if (waterParams.length === 0) {
-        return res.status(404).json({ message: 'No water parameters found for this pond' });
-      }
-  
-      res.status(200).json(waterParams); // Trả về danh sách thông số nước
-    } catch (err) {
-      console.error('Error fetching water parameters:', err);
-      res.status(500).json({ message: 'Server error' });
-    }
-  };
+
+    res.status(200).json(waterParam); // Trả về thông số nước mới nhất
+  } catch (err) {
+    console.error('Error fetching water parameters:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
   
 
 // Cập nhật thông số nước
@@ -147,6 +149,7 @@ export const updateWaterPara = async (req, res) => {
         pondPhosphate !== undefined
           ? pondPhosphate
           : waterPara.pondPhosphate,
+      recordDate: new Date(),
       // recordDate không nên cập nhật lại, nếu cần thì thêm logic riêng
     });
 

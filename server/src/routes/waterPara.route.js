@@ -151,11 +151,11 @@ router.get('/getAllWaterParameter', verifyToken, getAllWaterParas);
  *       500:
  *         description: Server error
  */
-router.get('/getWaterParabyPondId/:pondId', verifyToken, getWaterParaByPondId);
+router.get('/pond/:pondId', verifyToken, getWaterParaByPondId);
 
 /**
  * @swagger
- * /api/waterPara/getWaterParabyPondId/{id}:
+ * /api/waterPara/updateWaterParameter/{id}:
  *   put:
  *     tags:
  *     - Water Parameter Controller
