@@ -41,3 +41,31 @@ export const getAllProducts = async (req, res) => {
   }
 };
 
+// Lấy sản phẩm theo ID
+export const getProductById = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ message: 'Product ID is required' });
+  }
+
+  try {
+    const product = await Product.findByPk(id, {
+      include: {
+        model: User,
+        attributes: ['userId', 'username'], // Bao gồm thông tin người dùng
+      },
+    });
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.status(200).json(product);
+  } catch (err) {
+    console.error('Error fetching product:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
