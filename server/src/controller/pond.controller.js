@@ -164,12 +164,24 @@ export const deletePondByOwner = async (req, res) => {
   }
 };
 
+
 export const getAllPonds = async (req, res) => {
   try {
-    const pond = await Pond.findAll();
-    res.json(pond);
+    const ponds = await Pond.findAll({
+      include: [{
+        model: User,
+        attributes: ['username']
+      }]
+    });
+
+    const pondsWithUsername = ponds.map(pond => ({
+      ...pond.toJSON(),
+      username: pond.User ? pond.User.username : null
+    }));
+
+    res.json(pondsWithUsername);
   } catch (err) {
-    console.error('Error fetching users:', err);
+    console.error('Error fetching ponds:', err);
     res.status(500).send(err.message);
   }
 };
