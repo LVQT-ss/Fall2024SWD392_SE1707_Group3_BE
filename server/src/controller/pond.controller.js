@@ -1,6 +1,6 @@
 import Pond from '../models/Pond.model.js';
 import User from '../models/user.models.js';
-
+import KoiFish from '../models/Koifish.model.js';
 
 // Create a new pond
 export const createPond = async (req, res) => {
@@ -42,9 +42,24 @@ export const getAllPondsByUser = async (req, res) => {
     const userId = req.userId;
     const ponds = await Pond.findAll({ where: { userId } });
 
+    const pondsWithCapacity = await Promise.all(ponds.map(async pond => {
+      const currentKoiCount = await KoiFish.count({
+        where: { currentPondId: pond.pondId }
+      });
+
+      return {
+        ...pond.toJSON(),
+        pondCapacity: {
+          maxCapacity: pond.pondCapacityOfKoiFish,
+          currentCount: currentKoiCount,
+          remainingSlots: pond.pondCapacityOfKoiFish - currentKoiCount
+        }
+      };
+    }));
+
     res.status(200).json({
       success: true,
-      data: ponds
+      data: pondsWithCapacity
     });
   } catch (error) {
     res.status(500).json({
@@ -165,6 +180,7 @@ export const deletePondByOwner = async (req, res) => {
 };
 
 
+
 export const getAllPonds = async (req, res) => {
   try {
     const ponds = await Pond.findAll({
@@ -174,19 +190,29 @@ export const getAllPonds = async (req, res) => {
       }]
     });
 
-    const pondsWithUsername = ponds.map(pond => ({
-      ...pond.toJSON(),
-      username: pond.User ? pond.User.username : null
+    const pondsWithDetails = await Promise.all(ponds.map(async pond => {
+      const currentKoiCount = await KoiFish.count({
+        where: { currentPondId: pond.pondId }
+      });
+
+      return {
+        ...pond.toJSON(),
+        username: pond.User ? pond.User.username : null,
+        pondCapacity: {
+          maxCapacity: pond.pondCapacityOfKoiFish,
+          currentCount: currentKoiCount,
+          remainingSlots: pond.pondCapacityOfKoiFish - currentKoiCount
+        }
+      };
     }));
 
-    res.json(pondsWithUsername);
+    res.json(pondsWithDetails);
   } catch (err) {
     console.error('Error fetching ponds:', err);
     res.status(500).send(err.message);
   }
 };
 
-// Get pond by ID with koi fish count
 export const getPondById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -204,11 +230,10 @@ export const getPondById = async (req, res) => {
         'pondDrains',
         'pondAeroCapacity',
         'pondCapacityOfKoiFish',
-        'userId'  // Added userId to check ownership
+        'userId'
       ]
     });
 
-    // Check if pond exists
     if (!pond) {
       return res.status(404).json({
         success: false,
@@ -216,7 +241,6 @@ export const getPondById = async (req, res) => {
       });
     }
 
-    // Check authorization (allow access only to admin or pond owner)
     const user = await User.findByPk(userId);
     if (!user) {
       return res.status(404).json({
@@ -232,10 +256,22 @@ export const getPondById = async (req, res) => {
       });
     }
 
-    // Send the response once with all pond data
+    const currentKoiCount = await KoiFish.count({
+      where: { currentPondId: pond.pondId }
+    });
+
+    const pondWithCapacity = {
+      ...pond.toJSON(),
+      pondCapacity: {
+        maxCapacity: pond.pondCapacityOfKoiFish,
+        currentCount: currentKoiCount,
+        remainingSlots: pond.pondCapacityOfKoiFish - currentKoiCount
+      }
+    };
+
     return res.status(200).json({
       success: true,
-      data: pond
+      data: pondWithCapacity
     });
 
   } catch (error) {
