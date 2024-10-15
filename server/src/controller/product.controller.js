@@ -68,4 +68,34 @@ export const getProductById = async (req, res) => {
   }
 };
 
+// Cập nhật sản phẩm
+export const updateProduct = async (req, res) => {
+  const { id } = req.params;
+  const { productName, productDescription, productPrice, inStock } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ message: 'Product ID is required' });
+  }
+
+  try {
+    const product = await Product.findByPk(id);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Cập nhật thông tin sản phẩm nếu được cung cấp
+    await product.update({
+      productName: productName !== undefined ? productName : product.productName,
+      productDescription: productDescription !== undefined ? productDescription : product.productDescription,
+      productPrice: productPrice !== undefined ? productPrice : product.productPrice,
+      inStock: inStock !== undefined ? inStock : product.inStock,
+    });
+
+    res.status(200).json({ message: 'Product updated successfully', product });
+  } catch (err) {
+    console.error('Error updating product:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
