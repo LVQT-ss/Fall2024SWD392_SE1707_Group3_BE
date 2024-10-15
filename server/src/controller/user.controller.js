@@ -84,3 +84,36 @@ export const deleteUser = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
+export const getAllStaff = async (req, res) => {
+  try {
+    const staffUsers = await User.findAll({
+      where: { usertype: 'Staff' },
+    });
+
+    if (staffUsers.length === 0) {
+      return res.status(404).json({ message: 'No staff users found' });
+    }
+
+    res.status(200).json(staffUsers);
+  } catch (error) {
+    console.error('Error fetching staff users:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+export const getAllCustomer = async (req, res) => {
+  try {
+    const customerUsers = await User.findAll({
+      where: { usertype: 'Customer' },
+    });
+
+    if (customerUsers.length === 0) {
+      return res.status(404).json({ message: 'No customer users found' });
+    }
+
+    res.status(200).json(customerUsers);
+  } catch (error) {
+    console.error('Error fetching customer users:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
