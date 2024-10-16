@@ -1,10 +1,9 @@
-import Product from "../models/Product.model";
-import User from "../models/user.models";
+import Product from "../models/Product.model.js";
+import User from "../models/user.models.js";
 
 // Tạo sản phẩm mới
 export const createProduct = async (req, res) => {
   const { userId, productName, productDescription, productPrice, inStock } = req.body;
-
   // Kiểm tra các trường bắt buộc
   if (!userId || !productName || !productDescription || productPrice === undefined || inStock === undefined) {
     return res.status(400).json({ message: 'Missing required fields' });
@@ -43,17 +42,16 @@ export const getAllProducts = async (req, res) => {
 
 // Lấy sản phẩm theo ID
 export const getProductById = async (req, res) => {
-  const { id } = req.params;
-
-  if (!id) {
+  const { productId } = req.params;  // Use 'productId' to match the route parameter
+  if (!productId) {
     return res.status(400).json({ message: 'Product ID is required' });
   }
 
   try {
-    const product = await Product.findByPk(id, {
+    const product = await Product.findByPk(productId, {
       include: {
         model: User,
-        attributes: ['userId', 'username'], // Bao gồm thông tin người dùng
+        attributes: ['userId', 'username'], // Include user info
       },
     });
 
@@ -70,15 +68,15 @@ export const getProductById = async (req, res) => {
 
 // Cập nhật sản phẩm
 export const updateProduct = async (req, res) => {
-  const { id } = req.params;
+  const { productId } = req.params;  // Sử dụng đúng biến productId
   const { productName, productDescription, productPrice, inStock } = req.body;
 
-  if (!id) {
+  if (!productId) {
     return res.status(400).json({ message: 'Product ID is required' });
   }
 
   try {
-    const product = await Product.findByPk(id);
+    const product = await Product.findByPk(productId);  // Sử dụng productId thay vì id
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
@@ -100,15 +98,16 @@ export const updateProduct = async (req, res) => {
 };
 
 // Xóa sản phẩm
+// Xóa sản phẩm
 export const deleteProduct = async (req, res) => {
-  const { id } = req.params;
+  const { productId } = req.params;  // Thay đổi từ 'id' thành 'productId'
 
-  if (!id) {
+  if (!productId) {
     return res.status(400).json({ message: 'Product ID is required' });
   }
 
   try {
-    const product = await Product.findByPk(id);
+    const product = await Product.findByPk(productId);  // Sử dụng 'productId'
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
