@@ -5,6 +5,7 @@ import {
   getWaterParaByPondId,
   updateWaterPara,
   deleteWaterPara,
+  getAllWaterParaRecordByPondId,
 } from '../controller/waterPara.controller.js';
 import { verifyToken } from '../middleware/verifyUser.js';
 
@@ -152,6 +153,32 @@ router.get('/getAllWaterParameter', verifyToken, getAllWaterParas);
  *         description: Server error
  */
 router.get('/pond/:pondId', verifyToken, getWaterParaByPondId);
+
+/**
+ * @swagger
+ * /api/waterPara/pond/{pondId}/all:
+ *   get:
+ *     tags:
+ *     - Water Parameter Controller
+ *     summary: Get all water parameters by pond ID ordered by record date descending
+ *     parameters:
+ *       - in: path
+ *         name: pondId
+ *         required: true
+ *         description: ID of the pond
+ *         schema:
+ *           type: integer
+ *     security:
+ *       - Authorization: []
+ *     responses:
+ *       200:
+ *         description: List of water parameters retrieved successfully, ordered by record date descending
+ *       404:
+ *         description: No water parameters found for this pond
+ *       500:
+ *         description: Server error
+ */
+router.get('/pond/:pondId/all', verifyToken, getAllWaterParaRecordByPondId);
 
 /**
  * @swagger
