@@ -88,11 +88,11 @@ export const addKoi = async (req, res) => {
   }
 };
 
-
-
-
 export const getAllKoi = async (req, res) => {
   try {
+    if (req.userType !== 'Shop') {
+      return res.status(403).json({ message: 'Access denied. Only Shop can  access.' });
+    }
     const kois = await KoiFish.findAll();
     if (kois.length === 0) {
       return res.status(404).json({ success: false, message: 'No koi fish found' });
@@ -103,8 +103,6 @@ export const getAllKoi = async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to fetch koi fish', error: err.message });
   }
 };
-
-
 
 export const updateKoi = async (req, res) => {
   try {
@@ -142,8 +140,6 @@ export const updateKoi = async (req, res) => {
     });
   }
 };
-
-
 
   //// KOI RECORD 
 // Add a new record for a Koi fish
@@ -348,6 +344,40 @@ export const getKoiFishById = async (req, res) => {
       success: false,
       message: 'Failed to fetch koi fish',
       error: error.message
+    });
+  }
+};
+// ONLY FOR SHOP USERTYPE 
+export const getKoiFishByIdForShop = async (req, res) => {
+  try {
+    if (req.userType !== 'Shop') {
+      return res.status(403).json({ 
+        success: false, 
+        message: 'Access denied. Only Shop can access.' 
+      });
+    }
+
+    const { fishId } = req.params;
+
+    const koiFish = await KoiFish.findByPk(fishId);
+
+    if (!koiFish) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Koi fish not found' 
+      });
+    }
+
+    res.status(200).json({ 
+      success: true, 
+      data: koiFish 
+    });
+  } catch (err) {
+    console.error('Error fetching koi fish:', err);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to fetch koi fish', 
+      error: err.message 
     });
   }
 };

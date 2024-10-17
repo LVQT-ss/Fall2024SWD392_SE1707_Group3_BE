@@ -1,5 +1,5 @@
 import express from 'express';
-import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord ,updateKoi,deleteKoi,deleteKoiByUser,getAllKoiByUser,getKoiFishById} from "../controller/Koifish.controller.js"
+import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord ,updateKoi,deleteKoi,deleteKoiByUser,getAllKoiByUser,getKoiFishById,getKoiFishByIdForShop} from "../controller/Koifish.controller.js"
 import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = express.Router();
@@ -482,6 +482,93 @@ router.get('/getAllKoiByUser', verifyToken, getAllKoiByUser);
  */
 router.get('/getKoiFishById/:fishId', verifyToken, getKoiFishById);
 
+/**
+ * @swagger
+ * /api/koi/getKoiFishByIdForShop/{fishId}:
+ *   get:
+ *     tags:
+ *       - Admin Controller
+ *     summary: Retrieve a specific koi fish by ID
+ *     description: Get detailed information about a specific koi fish including its pond and owner details
+ *     security:
+ *       - Authorization: []
+ *     parameters:
+ *       - in: path
+ *         name: fishId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the koi fish to retrieve
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved koi fish
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     fishId:
+ *                       type: integer
+ *                     koiName:
+ *                       type: string
+ *                     koiImage:
+ *                       type: string
+ *                     koiGender:
+ *                       type: string
+ *                     koiBreed:
+ *                       type: integer
+ *                     koiOrigin:
+ *                       type: number
+ *                     price:
+ *                       type: number
+ *                     currentPondId:
+ *                       type: integer
+ *                     Pond:
+ *                       type: object
+ *                       properties:
+ *                         pondId:
+ *                           type: integer
+ *                         pondName:
+ *                           type: string
+ *                         pondImage:
+ *                           type: string
+ *                         pondSize:
+ *                           type: number
+ *                         pondDepth:
+ *                           type: number
+ *                         pondVolume:
+ *                           type: number
+ *                         pondDrains:
+ *                           type: integer
+ *                         pondAeroCapacity:
+ *                           type: number
+ *                     User:
+ *                       type: object
+ *                       properties:
+ *                         userId:
+ *                           type: integer
+ *                         username:
+ *                           type: string
+ *                         email:
+ *                           type: string
+ *                         userAddress:
+ *                           type: string
+ *                         userPhoneNumber:
+ *                           type: string
+ *       403:
+ *         description: Unauthorized - User doesn't have permission to view this koi fish
+ *       404:
+ *         description: Koi fish not found
+ *       500:
+ *         description: Server error
+ */
+router.get('/getKoiFishByIdForShop/:fishId',verifyToken ,getKoiFishByIdForShop);
 
 
 export default router;

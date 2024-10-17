@@ -26,7 +26,7 @@ const router = expess.Router();
  *             properties:
  *               usertype:
  *                 type: string
- *                 enum: ['Admin', 'Shop', 'Staff', 'Customer']
+ *                 enum: ['Staff', 'Customer']
  *                 example: Customer
  *               username:
  *                 type: string
@@ -128,7 +128,7 @@ router.post('/login', login);
  * /api/auth/staff-register:
  *   post:
  *     tags:
- *     - Auth Controller
+ *     - Staff Controller
  *     summary: Register a new staff member
  *     description: This endpoint allows you to register a new staff member in the system.
  *     requestBody:
@@ -196,7 +196,7 @@ router.post('/staff-register', staffRegister);
  * /api/auth/approve-staff/{userId}:
  *   put:
  *     tags:
- *     - Auth Controller
+ *     - Staff Controller
  *     summary: Approve a staff member
  *     description: This endpoint allows an Admin or Shop owner to approve a pending staff member.
  *     security:

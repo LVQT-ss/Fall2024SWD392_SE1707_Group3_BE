@@ -9,9 +9,9 @@ export const register = async (req, res) => {
     return res.status(400).json({ message: 'Please provide all required fields.' });
   }
 
-  const validusertypes = ['Staff', 'Customer', 'Admin', 'Shop'];
+  const validusertypes = ['Staff', 'Customer'];
   if (!validusertypes.includes(usertype)) {
-    return res.status(400).json({ message: 'Invalid usertype. Must be one of Admin, Shop, Staff, Customer.' });
+    return res.status(400).json({ message: 'Invalid usertype. Must be one of  Staff, Customer.' });
   }
 
   if (username.length > 50 || email.length > 50 || password.length > 50 || (userAddress && userAddress.length > 255) || (userPhoneNumber && userPhoneNumber.length > 50)) {
@@ -105,7 +105,7 @@ export const staffRegister = async (req, res) => {
     });
 
     res.status(201).json({ 
-      message: 'Staff member successfully registered! Awaiting admin approval.',
+      message: 'Staff member successfully registered! Awaiting Shop approval.',
       user: {
         userId: user.userId,
         username: user.username,
@@ -125,12 +125,11 @@ export const staffRegister = async (req, res) => {
 
 export const approveStaff = async (req, res) => {
   const { userId } = req.params;
-  const approverId = req.userId;  // Using req.userId from the token
 
   try {
-    // Check if the user making the request is an Admin using the decoded token value
-    if (req.userType !== 'Admin') {
-      return res.status(403).json({ message: 'Access denied. Only Admins can approve staff.' });
+    // Check if the user making the request is an Shop using the decoded token value
+    if (req.userType !== 'Shop') {
+      return res.status(403).json({ message: 'Access denied. Only Shop can approve staff.' });
     }
 
     // Find the staff member to approve
