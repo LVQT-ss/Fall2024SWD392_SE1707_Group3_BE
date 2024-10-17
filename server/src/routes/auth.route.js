@@ -1,5 +1,5 @@
 import expess from 'express';
-import { login,register } from '../controller/auth.controller.js';
+import { login,register,staffRegister } from '../controller/auth.controller.js';
 
 const router = expess.Router();
 
@@ -121,5 +121,74 @@ router.post('/register', register);
  *         description: Server error
  */
 router.post('/login', login);
+
+/**
+ * @swagger
+ * /api/auth/staff-register:
+ *   post:
+ *     tags:
+ *     - Auth Controller
+ *     summary: Register a new staff member
+ *     description: This endpoint allows you to register a new staff member in the system.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - email
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: johnstaff
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: johnstaff@company.com
+ *               password:
+ *                 type: string
+ *                 example: StaffPass123!
+ *               userAddress:
+ *                 type: string
+ *                 example: 123 Staff St, Stafftown, USA
+ *               userPhoneNumber:
+ *                 type: string
+ *                 example: +1234567890
+ *     responses:
+ *       201:
+ *         description: Staff member successfully registered
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Staff member successfully registered! Awaiting admin approval.
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     userId:
+ *                       type: integer
+ *                     username:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     usertype:
+ *                       type: string
+ *                     userStatus:
+ *                       type: string
+ *       400:
+ *         description: Bad Request - Invalid user input
+ *       409:
+ *         description: Conflict - User already exists
+ *       500:
+ *         description: Server Error
+ */
+router.post('/staff-register', staffRegister);
+
 
 export default router;

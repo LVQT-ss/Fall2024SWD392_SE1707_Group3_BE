@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../database/db.js';
-import Pond from './pond.model.js'; // Giả sử bạn đã định nghĩa model Pond
+import Pond from './Pond.model.js'; // Giả sử bạn đã định nghĩa model Pond
 
 const WaterPara = sequelize.define('WaterPara', {
   waterParameterId: {

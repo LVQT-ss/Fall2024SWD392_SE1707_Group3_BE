@@ -79,3 +79,47 @@ export const login = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
+
+export const staffRegister = async (req, res) => {
+  const { username, email, password, userAddress, userPhoneNumber } = req.body;
+
+  if (!username || !email || !password) {
+    return res.status(400).json({ message: 'Please provide all required fields: username, email, and password.' });
+  }
+
+  if (username.length > 50 || email.length > 50 || password.length > 50 || (userAddress && userAddress.length > 255) || (userPhoneNumber && userPhoneNumber.length > 50)) {
+    return res.status(400).json({ message: 'Input data exceeds allowed length.' });
+  }
+
+  try {
+    const hashedPassword = await bcryptjs.hash(password, 10);
+
+    const user = await User.create({
+      usertype: 'Staff',
+      username,
+      email,
+      password: hashedPassword,
+      userAddress: userAddress || null,
+      userPhoneNumber: userPhoneNumber || null,
+      userStatus: 'Pending' // Set initial status to 'Pending'
+    });
+
+    res.status(201).json({ 
+      message: 'Staff member successfully registered! Awaiting admin approval.',
+      user: {
+        userId: user.userId,
+        username: user.username,
+        email: user.email,
+        usertype: user.usertype,
+        userStatus: user.userStatus
+      }
+    });
+  } catch (err) {
+    if (err.name === 'SequelizeUniqueConstraintError') {
+      return res.status(409).json({ message: 'Username or email already exists. Please choose a different one.' });
+    }
+    console.error('Error creating staff user:', err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+

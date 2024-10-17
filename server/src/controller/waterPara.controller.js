@@ -1,4 +1,4 @@
-import Pond from '../models/pond.model.js';
+import Pond from '../models/Pond.model.js';
 import WaterPara from '../models/waterPara.model.js';
  // Để kiểm tra sự tồn tại của Pond
 
