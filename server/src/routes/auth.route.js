@@ -1,5 +1,5 @@
 import expess from 'express';
-import { login,register,staffRegister,approveStaff } from '../controller/auth.controller.js';
+import { login,register,staffRegister,approveStaff,getAllPendingStaff } from '../controller/auth.controller.js';
 import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = expess.Router();
@@ -251,4 +251,41 @@ router.post('/staff-register', staffRegister);
 router.put('/approve-staff/:userId', verifyToken, approveStaff);
 
 
+/**
+ * @swagger
+ * /api/auth/pending-staff:
+ *   get:
+ *     tags:
+ *       - Staff Controller
+ *     summary: Retrieve all pending staff members
+ *     description: This endpoint retrieves all staff members who have a user status of 'Pending' and are awaiting approval.
+ *     security:
+ *       - Authorization: []
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved pending staff members
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   userId:
+ *                     type: integer
+ *                   username:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *                   userStatus:
+ *                     type: string
+ *                     example: "Pending"
+ *       403:
+ *         description: Unauthorized - User doesn't have permission to view the pending staff members
+ *       404:
+ *         description: No pending staff members found
+ *       500:
+ *         description: Server error
+ */
+router.get('/pending-staff', verifyToken, getAllPendingStaff);
 export default router;

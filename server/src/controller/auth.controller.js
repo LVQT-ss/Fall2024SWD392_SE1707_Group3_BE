@@ -165,3 +165,28 @@ export const approveStaff = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
+
+export const getAllPendingStaff = async (req, res) => {
+  try {
+    // Find all users where usertype is 'Staff' and userStatus is 'Pending'
+    const pendingStaff = await User.findAll({
+      where: {
+        usertype: 'Staff',
+        userStatus: 'Pending'
+      },
+      attributes: ['userId', 'username', 'email', 'userStatus']  // Select specific fields to return
+    });
+
+    if (pendingStaff.length === 0) {
+      return res.status(404).json({ message: 'No pending staff members found.' });
+    }
+
+    res.status(200).json({
+      message: 'Pending staff members retrieved successfully.',
+      data: pendingStaff
+    });
+  } catch (err) {
+    console.error('Error fetching pending staff members:', err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
