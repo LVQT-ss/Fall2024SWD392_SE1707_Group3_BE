@@ -1,5 +1,6 @@
 import expess from 'express';
-import { login,register,staffRegister } from '../controller/auth.controller.js';
+import { login,register,staffRegister,approveStaff } from '../controller/auth.controller.js';
+import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = expess.Router();
 
@@ -189,6 +190,65 @@ router.post('/login', login);
  *         description: Server Error
  */
 router.post('/staff-register', staffRegister);
+
+/**
+ * @swagger
+ * /api/auth/approve-staff/{userId}:
+ *   put:
+ *     tags:
+ *     - Auth Controller
+ *     summary: Approve a staff member
+ *     description: This endpoint allows an Admin or Shop owner to approve a pending staff member.
+ *     security:
+ *       - Authorization: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The user ID of the staff member to approve
+ *     responses:
+ *       200:
+ *         description: Staff member successfully approved
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Staff member successfully approved.
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     userId:
+ *                       type: integer
+ *                     username:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     usertype:
+ *                       type: string
+ *                     userStatus:
+ *                       type: string
+ *                 approvedBy:
+ *                   type: object
+ *                   properties:
+ *                     userId:
+ *                       type: integer
+ *                     username:
+ *                       type: string
+ *                     usertype:
+ *                       type: string
+ *       403:
+ *         description: Access denied. Only Admins and Shop owners can approve staff.
+ *       404:
+ *         description: Pending staff member not found.
+ *       500:
+ *         description: Server Error
+ */
+router.put('/approve-staff/:userId', verifyToken, approveStaff);
 
 
 export default router;

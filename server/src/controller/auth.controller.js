@@ -123,3 +123,45 @@ export const staffRegister = async (req, res) => {
   }
 };
 
+export const approveStaff = async (req, res) => {
+  const { userId } = req.params;
+  const approverId = req.userId;  // Using req.userId from the token
+
+  try {
+    // Check if the user making the request is an Admin using the decoded token value
+    if (req.userType !== 'Admin') {
+      return res.status(403).json({ message: 'Access denied. Only Admins can approve staff.' });
+    }
+
+    // Find the staff member to approve
+    const staffMember = await User.findOne({ 
+      where: { 
+        userId, 
+        usertype: 'Staff', 
+        userStatus: 'Pending' 
+      } 
+    });
+
+    if (!staffMember) {
+      return res.status(404).json({ message: 'Pending staff member not found.' });
+    }
+
+    // Update the staff member's status
+    staffMember.userStatus = 'Active';
+    await staffMember.save();
+
+    res.status(200).json({
+      message: 'Staff member successfully approved.',
+      user: {
+        userId: staffMember.userId,
+        username: staffMember.username,
+        email: staffMember.email,
+        usertype: staffMember.usertype,
+        userStatus: staffMember.userStatus
+      },
+    });
+  } catch (err) {
+    console.error('Error approving staff member:', err);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
