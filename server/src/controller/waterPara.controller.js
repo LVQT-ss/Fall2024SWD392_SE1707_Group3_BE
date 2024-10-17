@@ -184,3 +184,30 @@ export const deleteWaterPara = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+export const getAllWaterParaRecordByPondId = async (req, res) => {
+  const { pondId } = req.params; // Lấy pondId từ tham số yêu cầu
+
+  if (!pondId) {
+    return res.status(400).json({ message: 'Pond ID is required' });
+  }
+
+  try {
+    const waterParas = await WaterPara.findAll({
+      where: { pondId }, // Tìm kiếm thông số nước theo pondId
+      include: {
+        model: Pond,
+        attributes: ['pondId', 'pondName'], // Lấy một số trường từ Pond nếu cần
+      },
+      order: [['recordDate', 'DESC']], // Sắp xếp theo recordDate giảm dần
+    });
+
+    if (waterParas.length === 0) {
+      return res.status(404).json({ message: 'No water parameters found for this pond' });
+    }
+
+    res.status(200).json(waterParas); // Trả về danh sách thông số nước
+  } catch (err) {
+    console.error('Error fetching water parameters:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
