@@ -129,8 +129,8 @@ router.post('/login', login);
  *   post:
  *     tags:
  *     - Staff Controller
- *     summary: Register a new staff member
- *     description: This endpoint allows you to register a new staff member in the system.
+ *     summary: Register a new staff member with auto-generated password
+ *     description: This endpoint allows you to register a new staff member in the system with an auto-generated password.
  *     requestBody:
  *       required: true
  *       content:
@@ -140,7 +140,6 @@ router.post('/login', login);
  *             required:
  *               - username
  *               - email
- *               - password
  *             properties:
  *               username:
  *                 type: string
@@ -149,9 +148,6 @@ router.post('/login', login);
  *                 type: string
  *                 format: email
  *                 example: johnstaff@company.com
- *               password:
- *                 type: string
- *                 example: StaffPass123!
  *               userAddress:
  *                 type: string
  *                 example: 123 Staff St, Stafftown, USA
@@ -168,7 +164,7 @@ router.post('/login', login);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Staff member successfully registered! Awaiting admin approval.
+ *                   example: Staff member successfully registered! Awaiting manager approval.
  *                 user:
  *                   type: object
  *                   properties:
@@ -182,6 +178,10 @@ router.post('/login', login);
  *                       type: string
  *                     userStatus:
  *                       type: string
+ *                 generatedPassword:
+ *                   type: string
+ *                   example: 12345678
+ *                   description: Auto-generated 8-digit password
  *       400:
  *         description: Bad Request - Invalid user input
  *       409:
@@ -295,8 +295,8 @@ router.get('/pending-staff', verifyToken, getAllPendingStaff);
  *   post:
  *     tags:
  *     - Admin Controller
- *     summary: Register a new manager member
- *     description: This endpoint allows you to register a new staff member in the system.
+ *     summary: Register a new manager with auto-generated password
+ *     description: This endpoint allows you to register a new manager in the system with an auto-generated password.
  *     requestBody:
  *       required: true
  *       content:
@@ -306,7 +306,6 @@ router.get('/pending-staff', verifyToken, getAllPendingStaff);
  *             required:
  *               - username
  *               - email
- *               - password
  *             properties:
  *               username:
  *                 type: string
@@ -315,18 +314,15 @@ router.get('/pending-staff', verifyToken, getAllPendingStaff);
  *                 type: string
  *                 format: email
  *                 example: johnManager@company.com
- *               password:
- *                 type: string
- *                 example: Manager!
  *               userAddress:
  *                 type: string
- *                 example: 123 Staff St, Stafftown, USA
+ *                 example: 123 Manager St, Managertown, USA
  *               userPhoneNumber:
  *                 type: string
  *                 example: +1234567890
  *     responses:
  *       201:
- *         description: Manager member successfully registered
+ *         description: Manager successfully registered
  *         content:
  *           application/json:
  *             schema:
@@ -334,7 +330,7 @@ router.get('/pending-staff', verifyToken, getAllPendingStaff);
  *               properties:
  *                 message:
  *                   type: string
- *                   example: Manager member successfully registered! Awaiting admin approval.
+ *                   example: Manager successfully registered!
  *                 user:
  *                   type: object
  *                   properties:
@@ -348,6 +344,10 @@ router.get('/pending-staff', verifyToken, getAllPendingStaff);
  *                       type: string
  *                     userStatus:
  *                       type: string
+ *                 generatedPassword:
+ *                   type: string
+ *                   example: 12345678
+ *                   description: Auto-generated 8-digit password
  *       400:
  *         description: Bad Request - Invalid user input
  *       409:

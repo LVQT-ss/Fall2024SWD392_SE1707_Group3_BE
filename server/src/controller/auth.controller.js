@@ -81,18 +81,20 @@ export const login = async (req, res) => {
   }
 };
 
-export const staffRegister = async (req, res) => {
-  const { username, email, password, userAddress, userPhoneNumber } = req.body;
 
-  if (!username || !email || !password) {
-    return res.status(400).json({ message: 'Please provide all required fields: username, email, and password.' });
+export const staffRegister = async (req, res) => {
+  const { username, email, userAddress, userPhoneNumber } = req.body;
+
+  if (!username || !email) {
+    return res.status(400).json({ message: 'Please provide all required fields: username and email.' });
   }
 
-  if (username.length > 50 || email.length > 50 || password.length > 50 || (userAddress && userAddress.length > 255) || (userPhoneNumber && userPhoneNumber.length > 50)) {
+  if (username.length > 50 || email.length > 50 || (userAddress && userAddress.length > 255) || (userPhoneNumber && userPhoneNumber.length > 50)) {
     return res.status(400).json({ message: 'Input data exceeds allowed length.' });
   }
 
   try {
+    const password = generateRandomPassword();
     const hashedPassword = await bcryptjs.hash(password, 10);
 
     const user = await User.create({
@@ -102,7 +104,7 @@ export const staffRegister = async (req, res) => {
       password: hashedPassword,
       userAddress: userAddress || null,
       userPhoneNumber: userPhoneNumber || null,
-      userStatus: 'Pending' // Set initial status to 'Pending'
+      userStatus: 'Pending'
     });
 
     res.status(201).json({ 
@@ -113,7 +115,8 @@ export const staffRegister = async (req, res) => {
         email: user.email,
         usertype: user.usertype,
         userStatus: user.userStatus
-      }
+      },
+      generatedPassword: password // Include the generated password in the response
     });
   } catch (err) {
     if (err.name === 'SequelizeUniqueConstraintError') {
@@ -123,7 +126,6 @@ export const staffRegister = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
-
 export const approveStaff = async (req, res) => {
   const { userId } = req.params;
 
@@ -192,17 +194,18 @@ export const getAllPendingStaff = async (req, res) => {
 };
 
 export const managerRegister = async (req, res) => {
-  const { username, email, password, userAddress, userPhoneNumber } = req.body;
+  const { username, email, userAddress, userPhoneNumber } = req.body;
 
-  if (!username || !email || !password) {
-    return res.status(400).json({ message: 'Please provide all required fields: username, email, and password.' });
+  if (!username || !email) {
+    return res.status(400).json({ message: 'Please provide all required fields: username and email.' });
   }
 
-  if (username.length > 50 || email.length > 50 || password.length > 50 || (userAddress && userAddress.length > 255) || (userPhoneNumber && userPhoneNumber.length > 50)) {
+  if (username.length > 50 || email.length > 50 || (userAddress && userAddress.length > 255) || (userPhoneNumber && userPhoneNumber.length > 50)) {
     return res.status(400).json({ message: 'Input data exceeds allowed length.' });
   }
 
   try {
+    const password = generateRandomPassword();
     const hashedPassword = await bcryptjs.hash(password, 10);
 
     const user = await User.create({
@@ -212,26 +215,35 @@ export const managerRegister = async (req, res) => {
       password: hashedPassword,
       userAddress: userAddress || null,
       userPhoneNumber: userPhoneNumber || null,
-      userStatus: 'Active' // Set initial status to 'Pending'
+      userStatus: 'Active'
     });
 
     res.status(201).json({ 
-      message: 'Manager member successfully registered!',
+      message: 'Manager successfully registered!',
       user: {
         userId: user.userId,
         username: user.username,
         email: user.email,
         usertype: user.usertype,
         userStatus: user.userStatus
-      }
+      },
+      generatedPassword: password // Include the generated password in the response
     });
   } catch (err) {
     if (err.name === 'SequelizeUniqueConstraintError') {
       return res.status(409).json({ message: 'Username or email already exists. Please choose a different one.' });
     }
-    console.error('Error creating staff user:', err);
+    console.error('Error creating manager user:', err);
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
 
-
+// Function generate 9 digit
+const generateRandomPassword = () => {
+  const digits = '0123456789';
+  let password = '';
+  for (let i = 0; i < 8; i++) {
+    password += digits[Math.floor(Math.random() * digits.length)];
+  }
+  return password;
+};
