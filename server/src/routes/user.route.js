@@ -31,7 +31,7 @@ const router = express.Router();
  *                     description: User Email
  *                   userType:
  *                     type: string
- *                     description: Type of the user (Admin, Shop, Staff, Customer)
+ *                     description: Type of the user (Admin, Manager, Staff, Customer)
  *                   userStatus:
  *                     type: boolean
  *                     description: Status of the user (true = Active, false = Inactive)
@@ -133,7 +133,7 @@ router.get('/getallcustomer', getAllCustomer);
  *                 example: John Doe
  *               userType:
  *                 type: string
- *                 enum: [Admin, Shop, Staff, Customer]
+ *                 enum: [Admin, Manager, Staff, Customer]
  *                 example: Admin
  *               userAddress:
  *                 type: string

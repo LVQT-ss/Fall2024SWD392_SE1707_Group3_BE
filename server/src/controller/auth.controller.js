@@ -105,7 +105,7 @@ export const staffRegister = async (req, res) => {
     });
 
     res.status(201).json({ 
-      message: 'Staff member successfully registered! Awaiting Shop approval.',
+      message: 'Staff member successfully registered! Awaiting Manager approval.',
       user: {
         userId: user.userId,
         username: user.username,
@@ -127,9 +127,9 @@ export const approveStaff = async (req, res) => {
   const { userId } = req.params;
 
   try {
-    // Check if the user making the request is an Shop using the decoded token value
-    if (req.userType !== 'Shop') {
-      return res.status(403).json({ message: 'Access denied. Only Shop can approve staff.' });
+    // Check if the user making the request is an Manager using the decoded token value
+    if (req.userType !== 'Manager') {
+      return res.status(403).json({ message: 'Access denied. Only Manager can approve staff.' });
     }
 
     // Find the staff member to approve

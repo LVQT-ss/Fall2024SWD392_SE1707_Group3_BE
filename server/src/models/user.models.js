@@ -9,7 +9,7 @@ const User = sequelize.define('User', {
     primaryKey: true,
   },
   usertype: {
-    type: DataTypes.ENUM('Admin', 'Shop', 'Staff', 'Customer'),
+    type: DataTypes.ENUM('Admin', 'Manager', 'Staff', 'Customer'),
     allowNull: false,
   },
   username: {
