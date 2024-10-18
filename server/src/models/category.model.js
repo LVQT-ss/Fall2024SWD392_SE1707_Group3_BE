@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../config/db.config.js';
+import sequelize from '../database/db.js';
 import Product from './Product.model.js'; // Import model Product để liên kết
 
 const Category = sequelize.define('Category', {

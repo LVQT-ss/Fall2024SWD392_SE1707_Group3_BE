@@ -5,8 +5,8 @@ import Product from '../models/Product.model.js';
 export const createCategory = async (req, res) => {
   const { productId, categoryName, categoryType } = req.body;
 
-  if (!productId || !categoryName) {
-    return res.status(400).json({ message: 'Product ID and Category name are required' });
+  if (!productId || !categoryName || !categoryType) {
+    return res.status(400).json({ message: 'Product ID, Category name, Category type  are required' });
   }
 
   try {
