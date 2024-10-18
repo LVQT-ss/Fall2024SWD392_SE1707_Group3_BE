@@ -1,8 +1,8 @@
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.models.js';
-import { sendPasswordEmail } from '../utils/mailer.js';
-
+import { sendPasswordEmail, sendPasswordResetEmail } from '../utils/mailer.js';
+import 'dotenv/config'
 
 export const register = async (req, res) => {
   const { usertype, username, email, password, userAddress, userPhoneNumber } = req.body;
@@ -255,4 +255,71 @@ const generateRandomPassword = () => {
     password += digits[Math.floor(Math.random() * digits.length)];
   }
   return password;
+};
+
+
+export const requestPasswordReset = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: 'Please provide an email address.' });
+  }
+
+  try {
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(404).json({ message: 'Email not found.' });
+    }
+
+    // Create a JWT token for password reset with a short expiration time (e.g., 1 hour)
+    const token = jwt.sign(
+      { userId: user.userId, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    // Generate reset link with token
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
+
+    // Send the password reset email with the token link
+    await sendPasswordResetEmail(user.email, resetLink);
+
+    res.status(200).json({ message: 'Password reset email has been sent.' });
+  } catch (error) {
+    console.error('Error processing password reset request:', error);
+    res.status(500).json({ message: 'Server error, please try again later.' });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  try {
+    // Verify the JWT token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const { userId } = decoded;
+
+    // Find the user using the userId from the token
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcryptjs.hash(newPassword, 10);
+
+    // Update the user's password
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({ message: 'Password has been successfully reset.' });
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.status(400).json({ message: 'Reset link has expired. Please request a new password reset.' });
+    } else if (error.name === 'JsonWebTokenError') {
+      return res.status(400).json({ message: 'Invalid reset token.' });
+    }
+    console.error('Error resetting password:', error);
+    res.status(500).json({ message: 'Server error, please try again later.' });
+  }
 };

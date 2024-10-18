@@ -1,5 +1,5 @@
 import expess from 'express';
-import { login,register,staffRegister,approveStaff,getAllPendingStaff, managerRegister } from '../controller/auth.controller.js';
+import { login,register,staffRegister,approveStaff,getAllPendingStaff, managerRegister, requestPasswordReset, resetPassword } from '../controller/auth.controller.js';
 import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = expess.Router();
@@ -357,4 +357,91 @@ router.get('/pending-staff', verifyToken, getAllPendingStaff);
  */
 router.post('/manager-register', managerRegister);
 
+
+/**
+ * @swagger
+ * /api/auth/forgot-password:
+ *   post:
+ *     tags:
+ *     - Auth Controller
+ *     summary: Request password reset
+ *     description: Allows a user to request a password reset link to be sent to their email.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: johndoe@mail.com
+ *     responses:
+ *       200:
+ *         description: Password reset email sent successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Password reset email sent successfully.
+ *       400:
+ *         description: Bad Request - Invalid email
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+router.post('/forgot-password', requestPasswordReset);
+
+/**
+ * @swagger
+ * /api/auth/reset-password:
+ *   post:
+ *     tags:
+ *     - Auth Controller
+ *     summary: Reset the password
+ *     description: Allows a user to reset their password using a token they received via email.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - token
+ *               - newPassword
+ *             properties:
+ *               token:
+ *                 type: string
+ *                 description: Password reset token sent to the user's email
+ *                 example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *               newPassword:
+ *                 type: string
+ *                 description: The new password to be set
+ *                 example: NewStrongPassword!23
+ *     responses:
+ *       200:
+ *         description: Password successfully reset
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Password successfully reset.
+ *       400:
+ *         description: Bad Request - Invalid token or password
+ *       403:
+ *         description: Forbidden - Expired or invalid token
+ *       500:
+ *         description: Server error
+ */
+router.post('/reset-password', resetPassword);
 export default router;
