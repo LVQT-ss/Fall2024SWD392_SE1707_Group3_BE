@@ -71,3 +71,32 @@ export const getCategoryById = async (req, res) => {
   }
 };
 
+// Cập nhật danh mục (Category)
+export const updateCategory = async (req, res) => {
+  const { categoryId } = req.params;
+  const { categoryName, categoryType, productId } = req.body;
+
+  if (!categoryId) {
+    return res.status(400).json({ message: 'Category ID is required' });
+  }
+
+  try {
+    const category = await Category.findByPk(categoryId);
+
+    if (!category) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+
+    // Cập nhật thông tin
+    await category.update({
+      categoryName: categoryName !== undefined ? categoryName : category.categoryName,
+      categoryType: categoryType !== undefined ? categoryType : category.categoryType,
+      productId: productId !== undefined ? productId : category.productId,
+    });
+
+    res.status(200).json({ message: 'Category updated successfully', category });
+  } catch (err) {
+    console.error('Error updating category:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
