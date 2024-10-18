@@ -100,3 +100,26 @@ export const updateCategory = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+// Xóa danh mục (Category)
+export const deleteCategory = async (req, res) => {
+  const { categoryId } = req.params;
+
+  if (!categoryId) {
+    return res.status(400).json({ message: 'Category ID is required' });
+  }
+
+  try {
+    const category = await Category.findByPk(categoryId);
+
+    if (!category) {
+      return res.status(404).json({ message: 'Category not found' });
+    }
+
+    await category.destroy();
+    res.status(200).json({ message: 'Category deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting category:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
