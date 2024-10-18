@@ -1,5 +1,5 @@
 import expess from 'express';
-import { login,register,staffRegister,approveStaff,getAllPendingStaff } from '../controller/auth.controller.js';
+import { login,register,staffRegister,approveStaff,getAllPendingStaff, managerRegister } from '../controller/auth.controller.js';
 import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = expess.Router();
@@ -288,4 +288,73 @@ router.put('/approve-staff/:userId', verifyToken, approveStaff);
  *         description: Server error
  */
 router.get('/pending-staff', verifyToken, getAllPendingStaff);
+
+/**
+ * @swagger
+ * /api/auth/manager-register:
+ *   post:
+ *     tags:
+ *     - Admin Controller
+ *     summary: Register a new manager member
+ *     description: This endpoint allows you to register a new staff member in the system.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - email
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: johnManager
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: johnManager@company.com
+ *               password:
+ *                 type: string
+ *                 example: Manager!
+ *               userAddress:
+ *                 type: string
+ *                 example: 123 Staff St, Stafftown, USA
+ *               userPhoneNumber:
+ *                 type: string
+ *                 example: +1234567890
+ *     responses:
+ *       201:
+ *         description: Manager member successfully registered
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Manager member successfully registered! Awaiting admin approval.
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     userId:
+ *                       type: integer
+ *                     username:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     usertype:
+ *                       type: string
+ *                     userStatus:
+ *                       type: string
+ *       400:
+ *         description: Bad Request - Invalid user input
+ *       409:
+ *         description: Conflict - User already exists
+ *       500:
+ *         description: Server Error
+ */
+router.post('/manager-register', managerRegister);
+
 export default router;
