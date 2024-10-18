@@ -1,6 +1,8 @@
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.models.js';
+import { sendPasswordEmail } from '../utils/mailer.js';
+
 
 export const register = async (req, res) => {
   const { usertype, username, email, password, userAddress, userPhoneNumber } = req.body;
@@ -107,6 +109,9 @@ export const staffRegister = async (req, res) => {
       userStatus: 'Pending'
     });
 
+    // Send email with generated password
+    const emailSent = await sendPasswordEmail(email, password, true);
+
     res.status(201).json({ 
       message: 'Staff member successfully registered! Awaiting Manager approval.',
       user: {
@@ -116,7 +121,7 @@ export const staffRegister = async (req, res) => {
         usertype: user.usertype,
         userStatus: user.userStatus
       },
-      generatedPassword: password // Include the generated password in the response
+      emailSent: emailSent // Indicate whether the email was sent successfully
     });
   } catch (err) {
     if (err.name === 'SequelizeUniqueConstraintError') {
@@ -126,6 +131,7 @@ export const staffRegister = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 };
+
 export const approveStaff = async (req, res) => {
   const { userId } = req.params;
 
@@ -218,6 +224,9 @@ export const managerRegister = async (req, res) => {
       userStatus: 'Active'
     });
 
+    // Send email with generated password
+    const emailSent = await sendPasswordEmail(email, password, false);
+
     res.status(201).json({ 
       message: 'Manager successfully registered!',
       user: {
@@ -227,7 +236,7 @@ export const managerRegister = async (req, res) => {
         usertype: user.usertype,
         userStatus: user.userStatus
       },
-      generatedPassword: password // Include the generated password in the response
+      emailSent: emailSent // Indicate whether the email was sent successfully
     });
   } catch (err) {
     if (err.name === 'SequelizeUniqueConstraintError') {
