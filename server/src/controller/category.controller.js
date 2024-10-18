@@ -28,3 +28,20 @@ export const createCategory = async (req, res) => {
   }
 };
 
+// Lấy tất cả danh mục (Categories)
+export const getAllCategories = async (req, res) => {
+  try {
+    const categories = await Category.findAll({
+      include: {
+        model: Product,
+        attributes: ['productId', 'productName'], // Bao gồm thông tin sản phẩm (Product)
+      },
+    });
+    res.status(200).json(categories);
+  } catch (err) {
+    console.error('Error fetching categories:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
