@@ -198,7 +198,7 @@ router.post('/staff-register', staffRegister);
  *     tags:
  *     - Staff Controller
  *     summary: Approve a staff member
- *     description: This endpoint allows an Admin or Shop owner to approve a pending staff member.
+ *     description: This endpoint allows an Admin or Manager owner to approve a pending staff member.
  *     security:
  *       - Authorization: []
  *     parameters:
@@ -242,7 +242,7 @@ router.post('/staff-register', staffRegister);
  *                     usertype:
  *                       type: string
  *       403:
- *         description: Access denied. Only Admins and Shop owners can approve staff.
+ *         description: Access denied. Only Admins and Manager owners can approve staff.
  *       404:
  *         description: Pending staff member not found.
  *       500:

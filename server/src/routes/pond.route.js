@@ -304,7 +304,7 @@ router.delete('/deletePondByOwner/:id', verifyToken, deletePondByOwner);
  *                           usertype:
  *                             type: string
  *                             description: Type of user
- *                             enum: [Admin, Shop, Staff, Customer]
+ *                             enum: [Admin, Manager, Staff, Customer]
  *                             example: "Customer"
  *                           userStatus:
  *                             type: string

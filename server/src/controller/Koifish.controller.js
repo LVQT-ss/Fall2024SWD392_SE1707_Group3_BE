@@ -90,8 +90,8 @@ export const addKoi = async (req, res) => {
 
 export const getAllKoi = async (req, res) => {
   try {
-    if (req.userType !== 'Shop') {
-      return res.status(403).json({ message: 'Access denied. Only Shop can  access.' });
+    if (req.userType !== 'Manager') {
+      return res.status(403).json({ message: 'Access denied. Only Manager can  access.' });
     }
     const kois = await KoiFish.findAll();
     if (kois.length === 0) {
@@ -347,13 +347,13 @@ export const getKoiFishById = async (req, res) => {
     });
   }
 };
-// ONLY FOR SHOP USERTYPE 
-export const getKoiFishByIdForShop = async (req, res) => {
+// ONLY FOR Manager USERTYPE 
+export const getKoiFishByIdForManager = async (req, res) => {
   try {
-    if (req.userType !== 'Shop') {
+    if (req.userType !== 'Manager') {
       return res.status(403).json({ 
         success: false, 
-        message: 'Access denied. Only Shop can access.' 
+        message: 'Access denied. Only Manager can access.' 
       });
     }
 

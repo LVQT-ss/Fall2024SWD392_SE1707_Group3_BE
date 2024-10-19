@@ -1,5 +1,5 @@
 import express from 'express';
-import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord ,updateKoi,deleteKoi,deleteKoiByUser,getAllKoiByUser,getKoiFishById,getKoiFishByIdForShop} from "../controller/Koifish.controller.js"
+import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord ,updateKoi,deleteKoi,deleteKoiByUser,getAllKoiByUser,getKoiFishById,getKoiFishByIdForManager} from "../controller/Koifish.controller.js"
 import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = express.Router();
@@ -484,7 +484,7 @@ router.get('/getKoiFishById/:fishId', verifyToken, getKoiFishById);
 
 /**
  * @swagger
- * /api/koi/getKoiFishByIdForShop/{fishId}:
+ * /api/koi/getKoiFishByIdForManager/{fishId}:
  *   get:
  *     tags:
  *       - Admin Controller
@@ -568,7 +568,7 @@ router.get('/getKoiFishById/:fishId', verifyToken, getKoiFishById);
  *       500:
  *         description: Server error
  */
-router.get('/getKoiFishByIdForShop/:fishId',verifyToken ,getKoiFishByIdForShop);
+router.get('/getKoiFishByIdForManager/:fishId',verifyToken ,getKoiFishByIdForManager);
 
 
 export default router;
