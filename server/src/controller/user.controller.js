@@ -96,7 +96,9 @@ export const deleteUser = async (req, res) => {
 export const getAllStaff = async (req, res) => {
   try {
     const staffUsers = await User.findAll({
-      where: { usertype: 'Staff' },
+      where: { usertype: 'Staff',
+        userStatus: "Active"
+       },
     });
 
     if (staffUsers.length === 0) {
