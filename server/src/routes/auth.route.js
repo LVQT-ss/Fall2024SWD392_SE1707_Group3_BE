@@ -1,5 +1,5 @@
 import expess from 'express';
-import { login,register,staffRegister,approveStaff,getAllPendingStaff, managerRegister, requestPasswordReset, resetPassword } from '../controller/auth.controller.js';
+import { login,register,staffRegister,approveStaff,getAllPendingStaff, managerRegister, requestPasswordReset, resetPassword, rejectStaff } from '../controller/auth.controller.js';
 import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = expess.Router();
@@ -249,6 +249,64 @@ router.post('/staff-register', staffRegister);
  *         description: Server Error
  */
 router.put('/approve-staff/:userId', verifyToken, approveStaff);
+/**
+ * @swagger
+ * /api/auth/reject-staff/{userId}:
+ *   put:
+ *     tags:
+ *     - Staff Controller
+ *     summary: Reject a staff member
+ *     description: This endpoint allows an Admin or Manager owner to approve a pending staff member.
+ *     security:
+ *       - Authorization: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The user ID of the staff member to approve
+ *     responses:
+ *       200:
+ *         description: Staff member successfully approved
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Staff member successfully approved.
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     userId:
+ *                       type: integer
+ *                     username:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     usertype:
+ *                       type: string
+ *                     userStatus:
+ *                       type: string
+ *                 approvedBy:
+ *                   type: object
+ *                   properties:
+ *                     userId:
+ *                       type: integer
+ *                     username:
+ *                       type: string
+ *                     usertype:
+ *                       type: string
+ *       403:
+ *         description: Access denied. Only Admins and Manager owners can approve staff.
+ *       404:
+ *         description: Pending staff member not found.
+ *       500:
+ *         description: Server Error
+ */
+router.put('/reject-staff/:userId', verifyToken, rejectStaff);
 
 
 /**
