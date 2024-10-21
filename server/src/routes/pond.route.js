@@ -199,7 +199,7 @@ router.delete('/deletePond/:id', verifyToken, deletePond);
 /**
  * @swagger
  * /api/pond/deletePondByOwner/{id}:
- *   delete:
+ *   put:
  *     tags:
  *     - Pond Controller
  *     summary: Delete a pond (only by owner or admin)
@@ -222,7 +222,7 @@ router.delete('/deletePond/:id', verifyToken, deletePond);
  *       500:
  *         description: Server error
  */
-router.delete('/deletePondByOwner/:id', verifyToken, deletePondByOwner);
+router.put('/deletePondByOwner/:id', verifyToken, deletePondByOwner);
 
 /**
  * @swagger

@@ -41,6 +41,11 @@ const Pond = sequelize.define('Pond', {
     allowNull: true,  // Changed to allow null values
     defaultValue: 0,  // Added a default value
   },
+  status: {
+    type: DataTypes.ENUM('active', 'inactive'),
+    defaultValue: 'active',
+    allowNull: false,
+  },
 }, {
   tableName: 'pond',
   timestamps: false,

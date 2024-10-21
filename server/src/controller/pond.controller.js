@@ -135,7 +135,7 @@ export const deletePond = async (req, res) => {
 // New method specifically for owner/admin deletion
 export const deletePondByOwner = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params;  // This should be pondId
     const userId = req.userId; // From verifyToken middleware
 
     // Find the pond
@@ -147,38 +147,36 @@ export const deletePondByOwner = async (req, res) => {
       });
     }
 
-    // Get the user making the request
-    const user = await User.findByPk(userId);
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found'
-      });
-    }
-
-    // Check if user is Admin or pond owner
-    if (user.usertype !== 'Admin' && pond.userId !== userId) {
+    // Check if user is the pond owner
+    if (pond.userId !== userId) {
       return res.status(403).json({
         success: false,
-        message: 'Unauthorized: You can only delete your own ponds'
+        message: 'Unauthorized: You can only update the status of your own ponds'
       });
     }
 
-    await pond.destroy();
+    // Update the pond status to 'inactive'
+    const updatedPond = await pond.update({ status: 'inactive' });
+
+    if (!updatedPond) {
+      return res.status(404).json({
+        success: false,
+        message: 'Failed to update pond status'
+      });
+    }
 
     res.status(200).json({
       success: true,
-      message: 'Pond deleted successfully'
+      message: 'Pond status updated to inactive successfully'
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Failed to delete pond',
+      message: 'Failed to update pond status',
       error: error.message
     });
   }
 };
-
 
 
 export const getAllPonds = async (req, res) => {
