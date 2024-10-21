@@ -2,6 +2,7 @@ import KoiFish from '../models/Koifish.model.js';
 import Pond from '../models/Pond.model.js';
 import KoiRecord from '../models/KoiRecord.model.js';
 import User from '../models/user.models.js';
+import KoiHealth from '../models/koiHealth.model.js';
 
 export const addKoi = async (req, res) => {
   try {
@@ -361,5 +362,36 @@ export const getKoiFishByIdForManager = async (req, res) => {
       message: 'Failed to fetch koi fish', 
       error: err.message 
     });
+  }
+};
+
+export const addKoiHealth = async (req, res) => {
+  try {
+    const { fishId, healthDate, illness, endDate, address, medicine, price } = req.body;
+
+    // Check if the koi fish exists
+    const koiFish = await KoiFish.findByPk(fishId);
+    if (!koiFish) {
+      return res.status(404).json({ success: false, message: 'Koi fish not found' });
+    }
+
+    // Create a new KoiHealth record
+    const koiHealthRecord = await KoiHealth.create({
+      fishId,
+      healthDate,
+      illness,
+      endDate,
+      address,
+      medicine,
+      price,
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: 'Koi health record added successfully',
+      data: koiHealthRecord,
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };

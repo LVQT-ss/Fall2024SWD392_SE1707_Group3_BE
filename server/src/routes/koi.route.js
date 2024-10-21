@@ -1,5 +1,5 @@
 import express from 'express';
-import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord ,updateKoi,deleteKoi,deleteKoiByUser,getAllKoiByUser,getKoiFishById,getKoiFishByIdForManager} from "../controller/Koifish.controller.js"
+import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord ,updateKoi,deleteKoi,deleteKoiByUser,getAllKoiByUser,getKoiFishById,getKoiFishByIdForManager, addKoiHealth} from "../controller/Koifish.controller.js"
 import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = express.Router();
@@ -570,5 +570,74 @@ router.get('/getKoiFishById/:fishId', verifyToken, getKoiFishById);
  */
 router.get('/getKoiFishByIdForManager/:fishId',verifyToken ,getKoiFishByIdForManager);
 
+
+//--- KOI HEALTH 
+/**
+ * @swagger
+ * /api/koi/addKoiHealth:
+ *   post:
+ *     tags:
+ *       - Koi Health Controller
+ *     summary: Add a new Koi health record
+ *     description: This endpoint allows adding a new health record for a specific Koi fish.
+ *     security:
+ *       - Authorization: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - fishId
+ *               - healthDate
+ *             properties:
+ *               fishId:
+ *                 type: integer
+ *                 example: 1
+ *               healthDate:
+ *                 type: string
+ *                 format: date
+ *                 example: "2024-10-15"
+ *               illness:
+ *                 type: string
+ *                 example: "Ich"
+ *               endDate:
+ *                 type: string
+ *                 format: date
+ *                 example: "2024-10-20"
+ *               address:
+ *                 type: string
+ *                 example: "123 Pond St"
+ *               medicine:
+ *                 type: string
+ *                 example: "Parasiticide"
+ *               price:
+ *                 type: integer
+ *                 example: 50
+ *     responses:
+ *       201:
+ *         description: Koi health record added successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Koi health record added successfully"
+ *                 data:
+ *                   $ref: '#/components/schemas/KoiHealth'
+ *       400:
+ *         description: Bad Request - Missing or invalid input
+ *       404:
+ *         description: Not Found - Koi fish not found
+ *       500:
+ *         description: Server error
+ */
+router.post('/addKoiHealth', verifyToken, addKoiHealth);
 
 export default router;
