@@ -1,5 +1,5 @@
 import express from 'express';
-import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord ,updateKoi,deleteKoi,deleteKoiByUser,getAllKoiByUser,getKoiFishById,getKoiFishByIdForManager, addKoiHealth} from "../controller/Koifish.controller.js"
+import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord ,updateKoi,deleteKoi,deleteKoiByUser,getAllKoiByUser,getKoiFishById,getKoiFishByIdForManager, addKoiHealth, deleteKoiHealth, updateKoiHealth} from "../controller/Koifish.controller.js"
 import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = express.Router();
@@ -639,5 +639,84 @@ router.get('/getKoiFishByIdForManager/:fishId',verifyToken ,getKoiFishByIdForMan
  *         description: Server error
  */
 router.post('/addKoiHealth', verifyToken, addKoiHealth);
+/**
+ * @swagger
+ * /api/koi/updateKoiHealth/{healthId}:
+ *   put:
+ *     tags:
+ *       - Koi Health Controller
+ *     summary: Update a Koi health record
+ *     description: This endpoint allows updating an existing Koi health record.
+ *     parameters:
+ *       - in: path
+ *         name: healthId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the Koi health record to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               healthDate:
+ *                 type: string
+ *                 format: date
+ *                 example: "2024-10-15"
+ *               illness:
+ *                 type: string
+ *                 example: "Ich"
+ *               endDate:
+ *                 type: string
+ *                 format: date
+ *                 example: "2024-10-20"
+ *               address:
+ *                 type: string
+ *                 example: "123 Pond St"
+ *               medicine:
+ *                 type: string
+ *                 example: "Parasiticide"
+ *               price:
+ *                 type: integer
+ *                 example: 50
+ *     responses:
+ *       200:
+ *         description: Koi health record updated successfully
+ *       400:
+ *         description: Bad Request - Invalid or missing input
+ *       404:
+ *         description: Not Found - Koi health record not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/updateKoiHealth/:healthId', verifyToken, updateKoiHealth);
+
+// KOI HEALTH RECORD DELETE
+/**
+ * @swagger
+ * /api/koi/deleteKoiHealth/{healthId}:
+ *   delete:
+ *     tags:
+ *       - Koi Health Controller
+ *     summary: Delete a Koi health record
+ *     description: This endpoint allows deleting an existing Koi health record.
+ *     parameters:
+ *       - in: path
+ *         name: healthId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the Koi health record to delete
+ *     responses:
+ *       200:
+ *         description: Koi health record deleted successfully
+ *       404:
+ *         description: Not Found - Koi health record not found
+ *       500:
+ *         description: Server error
+ */
+router.delete('/deleteKoiHealth/:healthId', verifyToken, deleteKoiHealth);
 
 export default router;

@@ -395,3 +395,55 @@ export const addKoiHealth = async (req, res) => {
     return res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
+
+export const updateKoiHealth = async (req, res) => {
+  try {
+    const { healthId } = req.params;
+    const { healthDate, illness, endDate, address, medicine, price } = req.body;
+
+    // Check if the koi health record exists
+    const koiHealthRecord = await KoiHealth.findByPk(healthId);
+    if (!koiHealthRecord) {
+      return res.status(404).json({ success: false, message: 'Koi health record not found' });
+    }
+
+    // Update the KoiHealth record
+    koiHealthRecord.healthDate = healthDate || koiHealthRecord.healthDate;
+    koiHealthRecord.illness = illness || koiHealthRecord.illness;
+    koiHealthRecord.endDate = endDate || koiHealthRecord.endDate;
+    koiHealthRecord.address = address || koiHealthRecord.address;
+    koiHealthRecord.medicine = medicine || koiHealthRecord.medicine;
+    koiHealthRecord.price = price || koiHealthRecord.price;
+
+    await koiHealthRecord.save();
+
+    return res.status(200).json({
+      success: true,
+      message: 'Koi health record updated successfully',
+      data: koiHealthRecord,
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+export const deleteKoiHealth = async (req, res) => {
+  try {
+    const { healthId } = req.params;
+
+    // Check if the koi health record exists
+    const koiHealthRecord = await KoiHealth.findByPk(healthId);
+    if (!koiHealthRecord) {
+      return res.status(404).json({ success: false, message: 'Koi health record not found' });
+    }
+
+    // Delete the record
+    await koiHealthRecord.destroy();
+
+    return res.status(200).json({
+      success: true,
+      message: 'Koi health record deleted successfully',
+    });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
