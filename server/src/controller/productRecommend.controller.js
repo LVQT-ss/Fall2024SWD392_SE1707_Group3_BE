@@ -78,4 +78,24 @@ export const updateProductRecommend = async (req, res) => {
   }
 };
 
+// Delete a product recommendation
+export const deleteProductRecommend = async (req, res) => {
+  const { recommendId } = req.params;
 
+  if (!recommendId) {
+    return res.status(400).json({ message: 'Recommendation ID is required' });
+  }
+
+  try {
+    const recommendation = await ProductRecommend.findByPk(recommendId);
+    if (!recommendation) {
+      return res.status(404).json({ message: 'Recommendation not found' });
+    }
+
+    await recommendation.destroy();
+    res.status(200).json({ message: 'Recommendation deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting recommendation:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
