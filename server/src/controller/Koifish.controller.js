@@ -12,6 +12,7 @@ export const addKoi = async (req, res) => {
       koiBreed, 
       koiGender, 
       koiImage,
+      koiOrigin,
       currentPondId
     } = req.body;
 
@@ -65,6 +66,7 @@ export const addKoi = async (req, res) => {
       koiBreed,
       koiGender,
       koiImage,
+      koiOrigin,
       currentPondId,
       userId
     });
@@ -107,8 +109,8 @@ export const getAllKoi = async (req, res) => {
 
 export const updateKoi = async (req, res) => {
   try {
-    const { fishId } = req.params; // Extract koi fish ID from route params
-    const { koiName, koiImage, koiGender, koiBreed, koiOrigin, price, currentPondId } = req.body; // Extract fields to update
+    const { fishId } = req.params; 
+    const { koiName, koiImage, koiGender, koiBreed, koiOrigin, currentPondId } = req.body;
 
     // Check if the koi fish exists
     const koi = await KoiFish.findByPk(fishId);
@@ -123,7 +125,6 @@ export const updateKoi = async (req, res) => {
       koiGender: koiGender || koi.koiGender,
       koiBreed: koiBreed || koi.koiBreed,
       koiOrigin: koiOrigin || koi.koiOrigin,
-      price: price || koi.price,
       currentPondId: currentPondId || koi.currentPondId,
     });
 
@@ -291,7 +292,6 @@ export const getKoiFishById = async (req, res) => {
         'koiGender',
         'koiBreed',
         'koiOrigin',
-        'price',
         'currentPondId'
       ]
     });
@@ -310,7 +310,7 @@ export const getKoiFishById = async (req, res) => {
       attributes: ['userId']
     });
 
-    if (req.usertype !== 'Admin' && koiFishWithUser.userId !== userId) {
+    if (req.usertype !== 'Manager' && koiFishWithUser.userId !== userId) {
       return res.status(403).json({
         success: false,
         message: 'You do not have permission to view this koi fish'
