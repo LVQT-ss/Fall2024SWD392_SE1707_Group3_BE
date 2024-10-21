@@ -219,43 +219,25 @@ export const deleteKoi = async (req, res) => {
 // DELETE KOI BY USER 
 export const deleteKoiByUser = async (req, res) => {
   try {
-    const userId = req.userId; 
-    const { fishId } = req.body; 
-
-    // Check if the koi fish exists and belongs to the user
-    const koi = await KoiFish.findOne({
-      where: {
-        fishId: fishId,
-        userId: userId, 
-      },
-    });
-
-    if (!koi) {
-      return res.status(404).json({
-        success: false,
-        message: 'Koi fish not found or does not belong to you.',
-      });
+    const { fishId } = req.params;
+    
+    if (!fishId) {
+      return res.status(400).json({ success: false, message: "Fish ID is required" });
     }
 
-  
-    await KoiRecord.destroy({
-      where: { fishId: fishId },
-    });
+    const result = await KoiFish.update(
+      { status: 'inactive' },
+      { where: { fishId: fishId } }
+    );
 
-   
-    await koi.destroy();
+    if (result[0] === 0) {
+      return res.status(404).json({ success: false, message: "Koi fish not found" });
+    }
 
-    res.status(200).json({
-      success: true,
-      message: 'Koi fish deleted successfully',
-    });
+    res.status(200).json({ success: true, message: "Koi fish deleted successfully" });
   } catch (error) {
-    console.error('Error deleting Koi fish:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to delete Koi fish',
-      error: error.message,
-    });
+    console.error("Error deleting Koi fish:", error);
+    res.status(500).json({ success: false, message: "Failed to delete Koi fish", error: error.message });
   }
 };
 

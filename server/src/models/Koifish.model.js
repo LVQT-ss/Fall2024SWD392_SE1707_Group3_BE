@@ -33,6 +33,11 @@ const KoiFish = sequelize.define('KoiFish', {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
+  status: {
+    type: DataTypes.ENUM('active', 'inactive'),
+    defaultValue: 'active',
+    allowNull: false,
+  },
 }, {
   tableName: 'koi_fish',
   timestamps: false,

@@ -345,7 +345,7 @@ router.delete('/deleteKoi/:fishId', verifyToken, deleteKoi);
 /**
  * @swagger
  * /api/koi/deleteKoiByUser/{fishId}:
- *   delete:
+ *   put:
  *     tags:
  *       - Koi Fish Controller
  *     summary: Delete an existing Koi fish
@@ -367,7 +367,7 @@ router.delete('/deleteKoi/:fishId', verifyToken, deleteKoi);
  *       500:
  *         description: Server error
  */
-router.delete('/deleteKoiByUser/:fishId', verifyToken, deleteKoiByUser);
+router.put('/deleteKoiByUser/:fishId', verifyToken, deleteKoiByUser);
 
 /**
  * @swagger
