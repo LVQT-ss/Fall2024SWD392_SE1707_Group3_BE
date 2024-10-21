@@ -3,6 +3,7 @@ import Pond from '../models/Pond.model.js';
 import KoiRecord from '../models/KoiRecord.model.js';
 import User from '../models/user.models.js';
 import KoiHealth from '../models/koiHealth.model.js';
+import FishTransfer from '../models/FishTransfer.model.js';
 
 export const addKoi = async (req, res) => {
   try {
@@ -445,5 +446,46 @@ export const deleteKoiHealth = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: 'Server error', error: error.message });
+  }
+};
+export const transferKoiFish = async (req, res) => {
+  try {
+    const { fishId, newPondId, reason } = req.body;
+    const userId = req.userId;  // From verifyToken middleware
+
+    // Find the koi fish
+    const koiFish = await KoiFish.findOne({ where: { fishId, userId } });
+    if (!koiFish) {
+      return res.status(404).json({ success: false, message: 'Koi fish not found' });
+    }
+
+    // Check if the new pond exists and belongs to the user
+    const newPond = await Pond.findOne({ where: { pondId: newPondId, userId } });
+    if (!newPond) {
+      return res.status(404).json({ success: false, message: 'New pond not found' });
+    }
+
+    // Check if the old pond is valid
+    const oldPondId = koiFish.currentPondId;
+
+    // Update the koi fish's pond
+    await koiFish.update({ currentPondId: newPondId });
+
+    // Save the fish transfer record
+    const fishTransfer = await FishTransfer.create({
+      fishId,
+      oldPondId,
+      newPondId,
+      reason,
+      transferDate: new Date()
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Koi fish transferred successfully',
+      data: fishTransfer
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to transfer koi fish', error: error.message });
   }
 };

@@ -1,6 +1,5 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../database/db.js';
-import User from './user.models.js';
 
 const Pond = sequelize.define('Pond', {
   pondId: {
@@ -38,21 +37,21 @@ const Pond = sequelize.define('Pond', {
   },
   pondCapacityOfKoiFish: {
     type: DataTypes.INTEGER,
-    allowNull: true,  // Changed to allow null values
-    defaultValue: 0,  // Added a default value
+    allowNull: true,
+    defaultValue: 0,
   },
   status: {
     type: DataTypes.ENUM('active', 'inactive'),
     defaultValue: 'active',
     allowNull: false,
   },
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
 }, {
   tableName: 'pond',
   timestamps: false,
 });
-
-// Relationship between Pond and User
-Pond.belongsTo(User, { foreignKey: 'userId' });
-User.hasMany(Pond, { foreignKey: 'userId' });
 
 export default Pond;

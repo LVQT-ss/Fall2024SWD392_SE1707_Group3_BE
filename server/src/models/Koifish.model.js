@@ -1,7 +1,5 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../database/db.js';
-import Pond from './Pond.model.js';
-import User from './user.models.js';
 
 const KoiFish = sequelize.define('KoiFish', {
   fishId: {
@@ -38,16 +36,17 @@ const KoiFish = sequelize.define('KoiFish', {
     defaultValue: 'active',
     allowNull: false,
   },
+  currentPondId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
 }, {
   tableName: 'koi_fish',
   timestamps: false,
 });
-
-// KoiFish and  Pond relationship
-KoiFish.belongsTo(Pond, { foreignKey: 'currentPondId' });
-Pond.hasMany(KoiFish, { foreignKey: 'currentPondId' });
-
-KoiFish.belongsTo(User, { foreignKey: 'userId' });
-User.hasMany(KoiFish, { foreignKey: 'userId' });
 
 export default KoiFish;

@@ -1,5 +1,5 @@
 import express from 'express';
-import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord ,updateKoi,deleteKoi,deleteKoiByUser,getAllKoiByUser,getKoiFishById,getKoiFishByIdForManager, addKoiHealth, deleteKoiHealth, updateKoiHealth} from "../controller/Koifish.controller.js"
+import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord ,updateKoi,deleteKoi,deleteKoiByUser,getAllKoiByUser,getKoiFishById,getKoiFishByIdForManager, addKoiHealth, deleteKoiHealth, updateKoiHealth, transferKoiFish} from "../controller/Koifish.controller.js"
 import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = express.Router();
@@ -718,5 +718,83 @@ router.put('/updateKoiHealth/:healthId', verifyToken, updateKoiHealth);
  *         description: Server error
  */
 router.delete('/deleteKoiHealth/:healthId', verifyToken, deleteKoiHealth);
+
+/**
+ * @swagger
+ * /api/koi/transferKoi:
+ *   post:
+ *     tags:
+ *       - Koi Fish Controller
+ *     summary: Transfer a koi fish between ponds
+ *     description: This endpoint transfers a koi fish from one pond to another and logs the transfer details.
+ *     security:
+ *       - Authorization: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - fishId
+ *               - newPondId
+ *             properties:
+ *               fishId:
+ *                 type: integer
+ *                 description: The ID of the koi fish to transfer
+ *                 example: 1
+ *               newPondId:
+ *                 type: integer
+ *                 description: The ID of the new pond where the koi fish is transferred
+ *                 example: 2
+ *               reason:
+ *                 type: string
+ *                 description: The reason for the transfer
+ *                 example: "Pond maintenance"
+ *     responses:
+ *       201:
+ *         description: Koi fish transferred successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Koi fish transferred successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     transferId:
+ *                       type: integer
+ *                       description: ID of the fish transfer record
+ *                       example: 5
+ *                     fishId:
+ *                       type: integer
+ *                       example: 1
+ *                     oldPondId:
+ *                       type: integer
+ *                       example: 1
+ *                     newPondId:
+ *                       type: integer
+ *                       example: 2
+ *                     transferDate:
+ *                       type: string
+ *                       format: date-time
+ *                       example: "2024-10-21T10:00:00.000Z"
+ *                     reason:
+ *                       type: string
+ *                       example: "Pond maintenance"
+ *       400:
+ *         description: Bad Request - Missing or invalid input
+ *       404:
+ *         description: Not Found - Koi fish or pond not found
+ *       500:
+ *         description: Server error
+ */
+router.post('/transferKoi', verifyToken, transferKoiFish);
 
 export default router;
