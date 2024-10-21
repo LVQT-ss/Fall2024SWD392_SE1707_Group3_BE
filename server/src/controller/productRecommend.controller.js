@@ -20,3 +20,15 @@ export const createProductRecommend = async (req, res) => {
   }
 };
 
+// Get all product recommendations
+export const getAllProductRecommends = async (req, res) => {
+  try {
+    const recommendations = await ProductRecommend.findAll();
+    res.status(200).json(recommendations);
+  } catch (err) {
+    console.error('Error fetching recommendations:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+
