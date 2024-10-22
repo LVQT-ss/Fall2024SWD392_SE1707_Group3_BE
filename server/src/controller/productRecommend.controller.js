@@ -31,25 +31,30 @@ export const getAllProductRecommends = async (req, res) => {
   }
 };
 
-// Get a recommendation by ID
-export const getProductRecommendById = async (req, res) => {
-  const { recommendId } = req.params;
+// Get all recommendations by waterParameterId
+export const getProductRecommendByWaterParameterId = async (req, res) => {
+  const { waterParameterId } = req.params;
 
-  if (!recommendId) {
-    return res.status(400).json({ message: 'Recommendation ID is required' });
+  if (!waterParameterId) {
+    return res.status(400).json({ message: 'Water Parameter ID is required' });
   }
 
   try {
-    const recommendation = await ProductRecommend.findByPk(recommendId);
-    if (!recommendation) {
-      return res.status(404).json({ message: 'Recommendation not found' });
+    const recommendations = await ProductRecommend.findAll({
+      where: { waterParameterId },
+    });
+
+    if (recommendations.length === 0) {
+      return res.status(404).json({ message: 'No recommendations found for this Water Parameter ID' });
     }
-    res.status(200).json(recommendation);
+
+    res.status(200).json(recommendations);
   } catch (err) {
-    console.error('Error fetching recommendation:', err);
+    console.error('Error fetching recommendations:', err);
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 // Update a product recommendation
 export const updateProductRecommend = async (req, res) => {

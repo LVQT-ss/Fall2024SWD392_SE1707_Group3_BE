@@ -2,7 +2,7 @@ import express from 'express';
 import { 
   createProductRecommend, 
   getAllProductRecommends, 
-  getProductRecommendById, 
+  getProductRecommendByWaterParameterId, 
   updateProductRecommend, 
   deleteProductRecommend 
 } from '../controller/productRecommend.controller.js';
@@ -62,29 +62,30 @@ router.get('/getAllProductRecommends', verifyToken, getAllProductRecommends);
 
 /**
  * @swagger
- * /api/productRecommends/getProductRecommendById/{recommendId}:
+ * /api/productRecommends/getProductRecommendByWaterParameterId/{waterParameterId}:
  *   get:
  *     tags:
  *       - ProductRecommend
- *     summary: Get a product recommendation by ID
+ *     summary: Get all product recommendations by water parameter ID
  *     parameters:
  *       - in: path
- *         name: recommendId
+ *         name: waterParameterId
  *         required: true
  *         schema:
  *           type: integer
- *         description: The ID of the product recommendation to retrieve
+ *         description: The ID of the water parameter to retrieve recommendations for
  *     security:
  *       - Authorization: []
  *     responses:
  *       200:
- *         description: Recommendation retrieved successfully
+ *         description: List of product recommendations retrieved successfully
  *       404:
- *         description: Recommendation not found
+ *         description: No recommendations found
  *       500:
  *         description: Server error
  */
-router.get('/getProductRecommendById/:recommendId', verifyToken, getProductRecommendById);
+
+router.get('/getProductRecommendByWaterParameterId/:waterParameterId', verifyToken, getProductRecommendByWaterParameterId);
 
 /**
  * @swagger
