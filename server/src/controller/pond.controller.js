@@ -195,7 +195,7 @@ export const getAllPonds = async (req, res) => {
     }
 
     // Verify user is an admin
-    if (user.usertype !== 'Manager') {
+    if (user.usertype !== 'Manager' && user.usertype !== 'Staff') {
       return res.status(403).json({
         success: false,
         message: 'Unauthorized: Only manager can access all ponds'
@@ -241,10 +241,10 @@ export const getAllPonds = async (req, res) => {
 };
 
 
-export const getPondById = async (req, res) => {
+export const getPondByIdforManager = async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.userId; // From verifyToken middleware
+    const userId = req.userId;
 
     const pond = await Pond.findOne({
       where: { pondId: id },
@@ -277,16 +277,22 @@ export const getPondById = async (req, res) => {
       });
     }
 
-    if (user.usertype !== 'Admin' && pond.userId !== userId) {
+    if (user.usertype !== 'Manager' && user.usertype !== 'Staff') {
       return res.status(403).json({
         success: false,
         message: 'You do not have permission to view this pond'
       });
     }
 
+
+    
     const currentKoiCount = await KoiFish.count({
-      where: { currentPondId: pond.pondId }
+      where: { 
+        currentPondId: pond.pondId,
+        status: 'active'  // Using ENUM value directly
+      },
     });
+
 
     const pondWithCapacity = {
       ...pond.toJSON(),
@@ -303,7 +309,85 @@ export const getPondById = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error fetching pond:', error);
+    console.error('Error in getPondById:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch pond',
+      error: error.message
+    });
+  }
+};
+
+export const getPondById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.userId;
+
+    const pond = await Pond.findOne({
+      where: { pondId: id },
+      attributes: [
+        'pondId',
+        'pondName',
+        'pondImage',
+        'pondSize',
+        'pondDepth',
+        'pondVolume',
+        'pondDrains',
+        'pondAeroCapacity',
+        'pondCapacityOfKoiFish',
+        'userId'
+      ]
+    });
+
+    if (!pond) {
+      return res.status(404).json({
+        success: false,
+        message: 'Pond not found'
+      });
+    }
+
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    if (pond.userId !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: 'You do not have permission to view this pond'
+      });
+    }
+
+    // Add logging for debugging
+
+    
+    const currentKoiCount = await KoiFish.count({
+      where: { 
+        currentPondId: pond.pondId,
+        status: 'active'  // Using ENUM value directly
+      },
+    });
+
+
+    const pondWithCapacity = {
+      ...pond.toJSON(),
+      pondCapacity: {
+        maxCapacity: pond.pondCapacityOfKoiFish,
+        currentCount: currentKoiCount,
+        remainingSlots: pond.pondCapacityOfKoiFish - currentKoiCount
+      }
+    };
+
+    return res.status(200).json({
+      success: true,
+      data: pondWithCapacity
+    });
+
+  } catch (error) {
+    console.error('Error in getPondById:', error);
     return res.status(500).json({
       success: false,
       message: 'Failed to fetch pond',
