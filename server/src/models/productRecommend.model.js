@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../database/db.js';
-import Product from './product.model.js';  
+import Product from './Product.model.js';  
 import WaterParameter from './waterPara.model.js';  
 
 const ProductRecommend = sequelize.define('ProductRecommend', {

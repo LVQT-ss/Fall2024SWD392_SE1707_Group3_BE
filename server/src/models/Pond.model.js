@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../database/db.js';
+import User from './user.models.js';
 
 const Pond = sequelize.define('Pond', {
   pondId: {
@@ -53,5 +54,6 @@ const Pond = sequelize.define('Pond', {
   tableName: 'pond',
   timestamps: false,
 });
-
+Pond.belongsTo(User, { foreignKey: 'userId' });
+User.hasMany(Pond, { foreignKey: 'userId' });
 export default Pond;

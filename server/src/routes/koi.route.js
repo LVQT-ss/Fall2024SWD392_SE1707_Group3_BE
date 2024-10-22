@@ -35,16 +35,12 @@ const router = express.Router();
  *                 type: string
  *                 example: "Male"
  *               koiBreed:
- *                 type: integer
- *                 example: 1
+ *                 type: string
+ *                 example: "yellow"
  *               koiOrigin:
  *                 type: number
  *                 format: float
  *                 example: 12.5
- *               price:
- *                 type: number
- *                 format: float
- *                 example: 100.00
  *               currentPondId:
  *                 type: integer
  *                 example: 1
@@ -271,9 +267,6 @@ router.get('/getAllKoiRecord', verifyToken, getAllKoiRecord);
  *               koiBreed:
  *                 type: integer
  *               koiOrigin:
- *                 type: number
- *                 format: float
- *               price:
  *                 type: number
  *                 format: float
  *               currentPondId:

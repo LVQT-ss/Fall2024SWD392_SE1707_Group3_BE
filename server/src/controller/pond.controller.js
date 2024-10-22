@@ -179,8 +179,30 @@ export const deletePondByOwner = async (req, res) => {
 };
 
 
+
 export const getAllPonds = async (req, res) => {
   try {
+    // Get user from request (added by verifyToken middleware)
+    const userId = req.userId;
+    
+    // Find the user and check if they are an admin
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+
+    // Verify user is an admin
+    if (user.usertype !== 'Manager') {
+      return res.status(403).json({
+        success: false,
+        message: 'Unauthorized: Only manager can access all ponds'
+      });
+    }
+
+    // If user is admin, proceed with fetching all ponds
     const ponds = await Pond.findAll({
       include: [{
         model: User,
@@ -204,12 +226,20 @@ export const getAllPonds = async (req, res) => {
       };
     }));
 
-    res.json(pondsWithDetails);
+    res.status(200).json({
+      success: true,
+      data: pondsWithDetails
+    });
   } catch (err) {
     console.error('Error fetching ponds:', err);
-    res.status(500).send(err.message);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch ponds',
+      error: err.message
+    });
   }
 };
+
 
 export const getPondById = async (req, res) => {
   try {
