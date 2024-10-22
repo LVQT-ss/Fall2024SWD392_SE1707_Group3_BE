@@ -1,5 +1,5 @@
 import express from 'express';
-import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord ,updateKoi,deleteKoi,deleteKoiByUser,getAllKoiByUser,getKoiFishById,getKoiFishByIdForManager, addKoiHealth, deleteKoiHealth, updateKoiHealth, transferKoiFish} from "../controller/Koifish.controller.js"
+import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord ,updateKoi,deleteKoi,deleteKoiByUser,getAllKoiByUser,getKoiFishById,getKoiFishByIdForManager, addKoiHealth, deleteKoiHealth, updateKoiHealth, transferKoiFish, getFishTransfers} from "../controller/Koifish.controller.js"
 import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = express.Router();
@@ -796,5 +796,64 @@ router.delete('/deleteKoiHealth/:healthId', verifyToken, deleteKoiHealth);
  *         description: Server error
  */
 router.post('/transferKoi', verifyToken, transferKoiFish);
+
+/**
+ * @swagger
+ * /api/koi/fishTransfers/{fishId}:
+ *   get:
+ *     tags:
+ *       - Koi Fish Controller
+ *     summary: Retrieve fish transfer details
+ *     description: Get all fish transfers globally or transfers for a specific fish by providing the fishId.
+ *     security:
+ *       - Authorization: []
+ *     parameters:
+ *       - in: path
+ *         name: fishId
+ *         required: false
+ *         schema:
+ *           type: integer
+ *         description: The ID of the koi fish to filter transfers
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved fish transfers
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   transferId:
+ *                     type: integer
+ *                   fishId:
+ *                     type: integer
+ *                   koiName:
+ *                     type: string
+ *                   oldPondId:
+ *                     type: integer
+ *                   newPondId:
+ *                     type: integer
+ *                   transferDate:
+ *                     type: string
+ *                     format: date-time
+ *                   reason:
+ *                     type: string
+ *                   OldPond:
+ *                     type: object
+ *                     properties:
+ *                       pondName:
+ *                         type: string
+ *                   NewPond:
+ *                     type: object
+ *                     properties:
+ *                       pondName:
+ *                         type: string
+ *       404:
+ *         description: No transfers found
+ *       500:
+ *         description: Server error
+ */
+router.get('/fishTransfers/:fishId?', verifyToken, getFishTransfers);
 
 export default router;

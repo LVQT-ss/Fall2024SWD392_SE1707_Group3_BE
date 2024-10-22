@@ -489,3 +489,42 @@ export const transferKoiFish = async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to transfer koi fish', error: error.message });
   }
 };
+
+
+// Get fish transfer details by fishId or globally
+export const getFishTransfers = async (req, res) => {
+  try {
+    const { fishId } = req.params; // Extract fishId from params if provided
+    
+    let transfers;
+    
+    if (fishId) {
+      // Fetch transfers for a specific fish
+      transfers = await FishTransfer.findAll({
+        where: { fishId },
+        include: [
+          { model: KoiFish, attributes: ['koiName'] },
+          { model: Pond, as: 'OldPond', attributes: ['pondName'] },
+          { model: Pond, as: 'NewPond', attributes: ['pondName'] },
+        ],
+      });
+      
+      if (!transfers.length) {
+        return res.status(404).json({ success: false, message: 'No transfers found for this fish' });
+      }
+    } else {
+      // Fetch all transfers globally
+      transfers = await FishTransfer.findAll({
+        include: [
+          { model: KoiFish, attributes: ['koiName'] },
+          { model: Pond, as: 'OldPond', attributes: ['pondName'] },
+          { model: Pond, as: 'NewPond', attributes: ['pondName'] },
+        ],
+      });
+    }
+
+    res.status(200).json({ success: true, data: transfers });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to retrieve transfers', error: error.message });
+  }
+};
