@@ -1,5 +1,5 @@
 import express from 'express';
-import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord ,updateKoi,deleteKoi,deleteKoiByUser,getAllKoiByUser,getKoiFishById,getKoiFishByIdForManager, addKoiHealth, deleteKoiHealth, updateKoiHealth, transferKoiFish, getFishTransfers, getKoiHealthByFishId} from "../controller/Koifish.controller.js"
+import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord ,updateKoi,deleteKoi,deleteKoiByUser,getAllKoiByUser,getKoiFishById,getKoiFishByIdForManager, addKoiHealth, deleteKoiHealth, updateKoiHealth, transferKoiFish, getFishTransfers, getKoiHealthByFishId, getKoiRecordById} from "../controller/Koifish.controller.js"
 import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = express.Router();
@@ -233,6 +233,36 @@ router.post('/koi-record', verifyToken,addKoiRecord);
  *         description: Server error
  */
 router.get('/getAllKoiRecord', verifyToken, getAllKoiRecord);
+/**
+ * @swagger
+ * /api/koi/koi-record/{id}:
+ *   get:
+ *     tags:
+ *       - Koi Record Controller
+ *     summary: Retrieve a specific Koi record by ID
+ *     description: Fetch a Koi record based on the provided Koi record ID.
+ *     security:
+ *       - Authorization: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID of the Koi record to retrieve
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved the Koi record
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/KoiRecord'
+ *       404:
+ *         description: Koi record not found
+ *       500:
+ *         description: Server error
+ */
+router.get('/koi-record/:id', verifyToken, getKoiRecordById);
 
 /**
  * @swagger

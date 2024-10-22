@@ -187,6 +187,29 @@ export const getAllKoiRecord = async (req, res) => {
   }
 };
 
+// Get a specific Koi record by ID
+export const getKoiRecordById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Find the KoiRecord by primary key (ID)
+    const koiRecord = await KoiRecord.findByPk(id);
+
+    // If the record is not found, return a 404 error
+    if (!koiRecord) {
+      return res.status(404).json({ success: false, message: 'KoiRecord not found' });
+    }
+
+    // Return the found KoiRecord
+    return res.status(200).json({ success: true, data: koiRecord });
+  } catch (error) {
+    console.error('Error fetching KoiRecord by ID:', error);
+    return res.status(500).json({ success: false, message: 'An error occurred while fetching the KoiRecord', error: error.message });
+  }
+};
+
+
+
 export const deleteKoi = async (req, res) => {
   try {
     const { fishId } = req.params; // Extract koi fish ID from route params
