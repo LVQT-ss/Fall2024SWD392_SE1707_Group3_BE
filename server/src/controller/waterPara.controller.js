@@ -1,8 +1,7 @@
 import Pond from '../models/Pond.model.js';
 import WaterPara from '../models/waterPara.model.js';
- // Để kiểm tra sự tồn tại của Pond
+import ProductRecommend from '../models/productRecommend.model.js';
 
-// Tạo một thông số nước mới
 export const createWaterPara = async (req, res) => {
   const {
     pondId,
@@ -49,12 +48,51 @@ export const createWaterPara = async (req, res) => {
       pondPhosphate,
     });
 
-    res.status(201).json(newWaterPara);
+    const waterParameterId = newWaterPara.waterParameterId; // Lấy waterParameterId của WaterPara vừa tạo
+
+    // Kiểm tra các điều kiện và tạo ProductRecommend tương ứng
+    const productRecommends = [];
+
+    if (pondPHLevel < 7 || pondPHLevel > 7.5) {
+      productRecommends.push({ waterParameterId, productId: 1 });
+    }
+
+    if (pondOxygenLevel > 5) {
+      productRecommends.push({ waterParameterId, productId: 2 });
+    }
+
+    if (pondSaltLevel < 0.3 || pondSaltLevel > 0.7) {
+      productRecommends.push({ waterParameterId, productId: 3 });
+    }
+
+    if (temperature < 20 || temperature > 27) {
+      productRecommends.push({ waterParameterId, productId: 4 });
+    }
+
+    if (pondNitrite < 0.25) {
+      productRecommends.push({ waterParameterId, productId: 5 });
+    }
+
+    if (pondNitrate < 40) {
+      productRecommends.push({ waterParameterId, productId: 6 });
+    }
+
+    if (pondPhosphate < 0.2 || pondPhosphate > 2) {
+      productRecommends.push({ waterParameterId, productId: 7 });
+    }
+
+    // Nếu có khuyến nghị sản phẩm, lưu vào ProductRecommend
+    if (productRecommends.length > 0) {
+      await ProductRecommend.bulkCreate(productRecommends);
+    }
+
+    res.status(201).json({ newWaterPara, productRecommends });
   } catch (err) {
     console.error('Error creating water parameter:', err);
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 // Lấy tất cả các thông số nước
 export const getAllWaterParas = async (req, res) => {

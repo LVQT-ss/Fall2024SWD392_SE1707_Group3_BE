@@ -11,7 +11,7 @@ import blogRoutes from './src/routes/blog.route.js';
 import waterParaRoutes from './src/routes/waterPara.route.js';
 import productRoutes from './src/routes/product.route.js';
 import categoryRoutes from './src/routes/category.route.js';
-
+import productRecommendRoutes from './src/routes/productRecommend.route.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -32,7 +32,7 @@ app.use('/api/blog', blogRoutes);
 app.use('/api/waterPara', waterParaRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
-
+app.use('/api/productRecommends', productRecommendRoutes);
 // Initialize and synchronize the database
 initDB().then(() => {
   app.listen(port, () => {
