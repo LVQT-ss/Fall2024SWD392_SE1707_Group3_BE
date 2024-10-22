@@ -1,5 +1,5 @@
 import express from 'express';
-import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord ,updateKoi,deleteKoi,deleteKoiByUser,getAllKoiByUser,getKoiFishById,getKoiFishByIdForManager, addKoiHealth, deleteKoiHealth, updateKoiHealth, transferKoiFish, getFishTransfers} from "../controller/Koifish.controller.js"
+import { addKoi, getAllKoi, addKoiRecord,getAllKoiRecord ,updateKoi,deleteKoi,deleteKoiByUser,getAllKoiByUser,getKoiFishById,getKoiFishByIdForManager, addKoiHealth, deleteKoiHealth, updateKoiHealth, transferKoiFish, getFishTransfers, getKoiHealthByFishId} from "../controller/Koifish.controller.js"
 import { verifyToken } from '../middleware/verifyUser.js';
 
 const router = express.Router();
@@ -855,5 +855,72 @@ router.post('/transferKoi', verifyToken, transferKoiFish);
  *         description: Server error
  */
 router.get('/fishTransfers/:fishId?', verifyToken, getFishTransfers);
+
+/**
+ * @swagger
+ * /api/koi/health/{fishId}:
+ *   get:
+ *     tags:
+ *       - Koi Health Controller
+ *     summary: Retrieve health records for a specific koi fish
+ *     description: Get all health records for a specific koi fish. Regular users can only view their own fish's records, while managers can view all records.
+ *     security:
+ *       - Authorization: []
+ *     parameters:
+ *       - in: path
+ *         name: fishId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the koi fish to retrieve health records for
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved health records
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       healthId:
+ *                         type: integer
+ *                       fishId:
+ *                         type: integer
+ *                       healthDate:
+ *                         type: string
+ *                         format: date
+ *                       illness:
+ *                         type: string
+ *                       endDate:
+ *                         type: string
+ *                         format: date
+ *                       address:
+ *                         type: string
+ *                       medicine:
+ *                         type: string
+ *                       price:
+ *                         type: integer
+ *                       KoiFish:
+ *                         type: object
+ *                         properties:
+ *                           koiName:
+ *                             type: string
+ *                           koiBreed:
+ *                             type: integer
+ *       403:
+ *         description: Unauthorized - User doesn't have permission to view these health records
+ *       404:
+ *         description: Koi fish or health records not found
+ *       500:
+ *         description: Server error
+ */
+router.get('/health/:fishId', verifyToken, getKoiHealthByFishId);
 
 export default router;

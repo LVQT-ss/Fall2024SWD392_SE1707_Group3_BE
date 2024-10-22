@@ -448,6 +448,68 @@ export const deleteKoiHealth = async (req, res) => {
     return res.status(500).json({ success: false, message: 'Server error', error: error.message });
   }
 };
+
+// Get health records for a specific koi fish
+export const getKoiHealthByFishId = async (req, res) => {
+  try {
+    const { fishId } = req.params;
+    const userId = req.userId; // From verifyToken middleware
+
+    // First verify the koi fish exists and belongs to the user (unless manager)
+    const koiFish = await KoiFish.findOne({
+      where: { fishId }
+    });
+
+    if (!koiFish) {
+      return res.status(404).json({
+        success: false,
+        message: 'Koi fish not found'
+      });
+    }
+
+    // Check ownership if not manager
+    if (req.userType !== 'Manager' && koiFish.userId !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: 'You do not have permission to view this koi fish\'s health records'
+      });
+    }
+
+    // Get health records
+    const healthRecords = await KoiHealth.findAll({
+      where: { fishId },
+      order: [['healthDate', 'DESC']], // Most recent first
+      include: [
+        {
+          model: KoiFish,
+          attributes: ['koiName', 'koiBreed']
+        }
+      ]
+    });
+
+    if (healthRecords.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'No health records found for this koi fish'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: healthRecords
+    });
+
+  } catch (error) {
+    console.error('Error fetching koi health records:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch koi health records',
+      error: error.message
+    });
+  }
+};
+
+
 export const transferKoiFish = async (req, res) => {
   try {
     const { fishId, newPondId, reason } = req.body;
