@@ -3,21 +3,14 @@ import Product from '../models/Product.model.js';
 
 // Tạo danh mục mới (Category)
 export const createCategory = async (req, res) => {
-  const { productId, categoryName, categoryType } = req.body;
+  const { categoryName, categoryType } = req.body;
 
-  if (!productId || !categoryName || !categoryType) {
-    return res.status(400).json({ message: 'Product ID, Category name, Category type  are required' });
+  if (!categoryName || !categoryType) {
+    return res.status(400).json({ message: 'Category name and Category type are required' });
   }
 
   try {
-    // Kiểm tra xem product có tồn tại không
-    const product = await Product.findByPk(productId);
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
-    }
-
     const newCategory = await Category.create({
-      productId,
       categoryName,
       categoryType,
     });
@@ -34,7 +27,7 @@ export const getAllCategories = async (req, res) => {
     const categories = await Category.findAll({
       include: {
         model: Product,
-        attributes: ['productId', 'productName'], // Bao gồm thông tin sản phẩm (Product)
+        attributes: ['productId', 'productName'], // Bao gồm thông tin sản phẩm
       },
     });
     res.status(200).json(categories);
@@ -56,6 +49,7 @@ export const getCategoryById = async (req, res) => {
     const category = await Category.findByPk(categoryId, {
       include: {
         model: Product,
+        as: 'products',
         attributes: ['productId', 'productName'],
       },
     });
@@ -71,10 +65,9 @@ export const getCategoryById = async (req, res) => {
   }
 };
 
-// Cập nhật danh mục (Category)
 export const updateCategory = async (req, res) => {
   const { categoryId } = req.params;
-  const { categoryName, categoryType, productId } = req.body;
+  const { categoryName, categoryType } = req.body;
 
   if (!categoryId) {
     return res.status(400).json({ message: 'Category ID is required' });
@@ -91,7 +84,6 @@ export const updateCategory = async (req, res) => {
     await category.update({
       categoryName: categoryName !== undefined ? categoryName : category.categoryName,
       categoryType: categoryType !== undefined ? categoryType : category.categoryType,
-      productId: productId !== undefined ? productId : category.productId,
     });
 
     res.status(200).json({ message: 'Category updated successfully', category });
