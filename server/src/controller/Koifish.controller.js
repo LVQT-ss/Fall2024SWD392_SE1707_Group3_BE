@@ -94,7 +94,7 @@ export const addKoi = async (req, res) => {
 
 export const getAllKoi = async (req, res) => {
   try {
-    if (req.userType !== 'Manager') {
+    if (req.userType !== 'Manager' && req.userType !== 'Staff') {
       return res.status(403).json({ message: 'Access denied. Only Manager can  access.' });
     }
     const kois = await KoiFish.findAll();

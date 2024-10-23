@@ -155,7 +155,27 @@ export const deletePondByOwner = async (req, res) => {
       });
     }
 
-    // Update the pond status to 'inactive'
+    // Check for active fish in the pond
+    const activeKoiFish = await KoiFish.findAll({
+      where: {
+        currentPondId: id,
+        status: 'active'  // Assuming your KoiFish model has a status field
+      }
+    });
+
+    if (activeKoiFish.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Cannot deactivate pond: There are still active koi fish in this pond',
+        activeKoiCount: activeKoiFish.length,
+        activeKoiFish: activeKoiFish.map(fish => ({
+          fishId: fish.fishId,
+          koiName: fish.koiName
+        }))
+      });
+    }
+
+    // If no active fish found, update the pond status to 'inactive'
     const updatedPond = await pond.update({ status: 'inactive' });
 
     if (!updatedPond) {
@@ -167,7 +187,13 @@ export const deletePondByOwner = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Pond status updated to inactive successfully'
+      message: 'Pond status updated to inactive successfully',
+      data: {
+        pondId: updatedPond.pondId,
+        pondName: updatedPond.pondName,
+        status: updatedPond.status,
+        deactivatedAt: new Date()
+      }
     });
   } catch (error) {
     res.status(500).json({
