@@ -26,12 +26,9 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             required:
- *               - productId
  *               - categoryName
+ *               - categoryType
  *             properties:
- *               productId:
- *                 type: integer
- *                 example: 1
  *               categoryName:
  *                 type: string
  *                 example: "Food"
@@ -46,6 +43,7 @@ const router = express.Router();
  *       500:
  *         description: Server error
  */
+
 router.post('/createCategory', verifyToken, createCategory);
 
 /**
