@@ -61,7 +61,7 @@ router.post('/createCategory', verifyToken, createCategory);
  *       500:
  *         description: Server error
  */
-router.get('/getAllCategories', verifyToken, getAllCategories);
+router.get('/getAllCategories', getAllCategories);
 
 /**
  * @swagger
@@ -76,8 +76,6 @@ router.get('/getAllCategories', verifyToken, getAllCategories);
  *         required: true
  *         schema:
  *           type: integer
- *     security:
- *       - Authorization: []
  *     responses:
  *       200:
  *         description: Category retrieved successfully
@@ -86,7 +84,7 @@ router.get('/getAllCategories', verifyToken, getAllCategories);
  *       500:
  *         description: Server error
  */
-router.get('/getCategoryById/:categoryId', verifyToken, getCategoryById);
+router.get('/getCategoryById/:categoryId', getCategoryById);
 
 /**
  * @swagger
@@ -101,8 +99,6 @@ router.get('/getCategoryById/:categoryId', verifyToken, getCategoryById);
  *         required: true
  *         schema:
  *           type: integer
- *     security:
- *       - Authorization: []
  *     requestBody:
  *       required: true
  *       content:
