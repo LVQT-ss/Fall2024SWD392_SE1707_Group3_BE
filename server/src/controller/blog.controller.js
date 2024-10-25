@@ -4,12 +4,14 @@ import User from '../models/user.models.js';
 // Tạo một blog mới
 export const createBlog = async (req, res) => {
   try {
-    const { blogTitle, blogContent } = req.body;
+    const { blogTitle, blogContent, image } = req.body;
     const userId = req.userId;
-  if (!blogTitle || !blogContent) {
-    return res.status(400).json({ message: 'blogTitle, and blogContent are required' });
-  }
-    // Kiểm tra xem user có tồn tại hay không
+    
+    if (!blogTitle || !blogContent) {
+      return res.status(400).json({ message: 'blogTitle and blogContent are required' });
+    }
+
+    // Check if user exists
     const user = await User.findByPk(userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -19,7 +21,8 @@ export const createBlog = async (req, res) => {
       userId,
       blogTitle,
       blogContent,
-      blogStatus: true,  // Mặc định blog mới sẽ có trạng thái active
+      blogStatus: true,  // Default to active
+      image,  // Add the image field if provided
     });
 
     res.status(201).json(newBlog);
@@ -28,6 +31,7 @@ export const createBlog = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 // Lấy tất cả các blog
 export const getAllBlogs = async (req, res) => {
@@ -66,13 +70,27 @@ export const getBlogById = async (req, res) => {
   }
 };
 
-// Cập nhật blog
-export const updateBlog = async (req, res) => {
+// Get all active blogs (with status true)
+export const getActiveBlogs = async (req, res) => {
+  try {
+    const activeBlogs = await Blog.findAll({
+      where: { blogStatus: true },
+      include: User, // Optionally include user information
+    });
+    res.status(200).json(activeBlogs);
+  } catch (err) {
+    console.error('Error fetching active blogs:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Update blog status only
+export const updateBlogStatus = async (req, res) => {
   const { id } = req.params;
-  const { blogTitle, blogContent, blogStatus } = req.body;
-  console.log(blogContent);
-  if (!id || (!blogTitle && !blogContent && blogStatus === undefined)) {
-    return res.status(400).json({ message: 'blogTitle and blogContent are required' });
+  const { blogStatus } = req.body;
+
+  if (!id || blogStatus === undefined) {
+    return res.status(400).json({ message: 'Blog ID and blogStatus are required' });
   }
 
   try {
@@ -82,11 +100,38 @@ export const updateBlog = async (req, res) => {
       return res.status(404).json({ message: 'Blog not found' });
     }
 
-    // Cập nhật blog với các thông tin mới
+    // Update only the blogStatus field
+    await blog.update({
+      blogStatus: blogStatus,
+    });
+
+    res.status(200).json({ message: 'Blog status updated successfully', blog });
+  } catch (err) {
+    console.error('Error updating blog status:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// Cập nhật blog
+export const updateBlog = async (req, res) => {
+  const { id } = req.params;
+  const { blogTitle, blogContent, image } = req.body;
+
+  if (!id || (!blogTitle && !blogContent && !image)) {
+    return res.status(400).json({ message: 'No fields to update' });
+  }
+
+  try {
+    const blog = await Blog.findByPk(id);
+    if (!blog) {
+      return res.status(404).json({ message: 'Blog not found' });
+    }
+
+    // Update blog with new information (excluding blogStatus)
     await blog.update({
       blogTitle: blogTitle || blog.blogTitle,
       blogContent: blogContent || blog.blogContent,
-      blogStatus: blogStatus !== undefined ? blogStatus : blog.blogStatus,
+      image: image || blog.image,  // Update the image if provided
     });
 
     res.status(200).json({ message: 'Blog updated successfully', blog });
@@ -95,6 +140,7 @@ export const updateBlog = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 // Xóa blog
 export const deleteBlog = async (req, res) => {
