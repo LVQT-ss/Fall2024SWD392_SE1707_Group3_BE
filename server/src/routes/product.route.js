@@ -50,6 +50,9 @@ const router = express.Router();
  *                 type: number
  *                 format: float
  *                 example: 20.99
+ *               image:   # New image field
+ *                 type: string
+ *                 example: "https://example.com/image.png"
  *               isActive:
  *                 type: boolean
  *                 example: true
@@ -151,6 +154,8 @@ router.get('/getProductById/:productId', getProductById);
  *                 format: float
  *               isActive:
  *                 type: boolean
+ *               image:   # New image field
+ *                 type: string
  *     responses:
  *       200:
  *         description: Product updated successfully

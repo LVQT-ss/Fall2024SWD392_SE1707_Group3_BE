@@ -10,28 +10,32 @@ const Blog = sequelize.define('Blog', {
   },
   blogTitle: {
     type: DataTypes.STRING,
-    allowNull: false,  
+    allowNull: false,
   },
   blogContent: {
-    type: DataTypes.TEXT,  
+    type: DataTypes.TEXT,
     allowNull: false,
   },
   blogDate: {
     type: DataTypes.DATE,
     allowNull: false,
-    defaultValue: DataTypes.NOW,  
+    defaultValue: DataTypes.NOW,
   },
   blogStatus: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
-    defaultValue: true,  
+    defaultValue: true,
+  },
+  image: {
+    type: DataTypes.STRING,
+    allowNull: true,  // Optional field for the image
   },
 }, {
   tableName: 'blog',
   timestamps: false,
 });
 
-// Quan hệ giữa blog và User
+// Relationships
 Blog.belongsTo(User, { foreignKey: 'userId' });
 User.hasMany(Blog, { foreignKey: 'userId' });
 
