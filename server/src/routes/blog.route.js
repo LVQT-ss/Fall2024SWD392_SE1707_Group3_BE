@@ -1,5 +1,5 @@
 import express from 'express';
-import { createBlog, getAllBlogs, getBlogById, updateBlog, deleteBlog } from '../controller/blog.controller.js';
+import { createBlog, getAllBlogs, getBlogById, updateBlog, deleteBlog, getActiveBlogs, updateBlogStatus } from '../controller/blog.controller.js';
 import { verifyToken } from '../middleware/verifyUser.js';
 const router = express.Router();
 
@@ -29,17 +29,12 @@ const router = express.Router();
  *               blogContent:
  *                 type: string
  *                 example: This is the content of the blog.
+ *               image:
+ *                 type: string
+ *                 example: https://example.com/image.jpg
  *     responses:
  *       201:
  *         description: Blog successfully created
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Blog successfully created!
  *       400:
  *         description: Bad Request - Invalid input
  *       401:
@@ -127,12 +122,86 @@ router.get('/getBlogById/:id', verifyToken,getBlogById);
 
 /**
  * @swagger
+ * /api/blog/getActiveBlogs:
+ *   get:
+ *     tags:
+ *     - Blog
+ *     summary: Get all active blogs
+ *     description: Retrieve a list of all blogs that have a status of true.
+ *     security:
+ *      - Authorization: []
+ *     responses:
+ *       200:
+ *         description: A list of active blogs
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                     example: 1
+ *                   title:
+ *                     type: string
+ *                     example: Blog title
+ *                   content:
+ *                     type: string
+ *                     example: Blog content
+ *       500:
+ *         description: Server error
+ */
+router.get('/getActiveBlogs', verifyToken, getActiveBlogs);
+
+/**
+ * @swagger
+ * /api/blog/updateBlogStatus/{id}:
+ *   patch:
+ *     tags:
+ *     - Blog
+ *     summary: Update the status of a blog by ID
+ *     description: Update the status (blogStatus) of an existing blog by its ID.
+ *     security:
+ *      - Authorization: []
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID of the blog to update
+ *         schema:
+ *           type: string
+ *           example: 1
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               blogStatus:
+ *                 type: boolean
+ *                 example: true
+ *     responses:
+ *       200:
+ *         description: Blog status updated successfully
+ *       404:
+ *         description: Blog not found
+ *       400:
+ *         description: Bad Request
+ *       500:
+ *         description: Server error
+ */
+router.patch('/updateBlogStatus/:id', verifyToken, updateBlogStatus);
+
+/**
+ * @swagger
  * /api/blog/updateBlog/{id}:
  *   put:
  *     tags:
  *     - Blog
- *     summary: Update blog by ID
- *     description: Update an existing blog by its ID.
+ *     summary: Update blog by ID (excluding blog status)
+ *     description: Update an existing blog by its ID. This route does not update the blog status.
  *     security:
  *      - Authorization: []
  *     parameters:
@@ -156,6 +225,9 @@ router.get('/getBlogById/:id', verifyToken,getBlogById);
  *               blogContent:
  *                 type: string
  *                 example: Updated blog content
+ *               image:
+ *                 type: string
+ *                 example: https://example.com/new-image.jpg
  *     responses:
  *       200:
  *         description: Blog updated successfully
