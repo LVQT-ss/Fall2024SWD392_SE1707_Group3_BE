@@ -21,10 +21,10 @@ const Product = sequelize.define('Product', {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: Category, // Link to Category model
+      model: Category,
       key: 'categoryId',
     },
-    onDelete: 'CASCADE', // When a category is deleted, related products will also be deleted
+    onDelete: 'CASCADE',
   },
   productName: {
     type: DataTypes.STRING(100),
@@ -40,12 +40,17 @@ const Product = sequelize.define('Product', {
   },
   isActive: {  
     type: DataTypes.BOOLEAN,
-    defaultValue: true,  // Products are active by default
+    defaultValue: true,
+  },
+  image: {  
+    type: DataTypes.STRING,
+    allowNull: true,
   },
 }, {
   tableName: 'Product',
   timestamps: false,
 });
+
 
 // Set up relationships
 Product.belongsTo(Category, { foreignKey: 'categoryId' }); // Each product belongs to a category

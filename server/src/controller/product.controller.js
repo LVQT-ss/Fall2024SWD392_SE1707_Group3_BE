@@ -2,9 +2,8 @@ import Product from "../models/Product.model.js";
 import User from "../models/user.models.js";
 
 // Tạo sản phẩm mới
-// Tạo sản phẩm mới
 export const createProduct = async (req, res) => {
-  const { userId, categoryId, productName, productDescription, productPrice } = req.body;
+  const { userId, categoryId, productName, productDescription, productPrice, image } = req.body;
   
   // Validate required fields
   if (!userId || !categoryId || !productName || !productDescription || productPrice === undefined) {
@@ -14,10 +13,11 @@ export const createProduct = async (req, res) => {
   try {
     const newProduct = await Product.create({
       userId,
-      categoryId, // Include categoryId in the creation
+      categoryId,
       productName,
       productDescription,
       productPrice,
+      image, // Include image if provided
     });
     res.status(201).json(newProduct);
   } catch (err) {
@@ -90,7 +90,7 @@ export const getProductById = async (req, res) => {
 // Cập nhật sản phẩm
 export const updateProduct = async (req, res) => {
   const { productId } = req.params;
-  const { productName, productDescription, productPrice, isActive } = req.body;
+  const { productName, productDescription, productPrice, isActive, image } = req.body;
 
   if (!productId) {
     return res.status(400).json({ message: 'Product ID is required' });
@@ -108,6 +108,7 @@ export const updateProduct = async (req, res) => {
       productDescription: productDescription !== undefined ? productDescription : product.productDescription,
       productPrice: productPrice !== undefined ? productPrice : product.productPrice,
       isActive: isActive !== undefined ? isActive : product.isActive,
+      image: image !== undefined ? image : product.image,
     });
 
     res.status(200).json({ message: 'Product updated successfully', product });
