@@ -52,8 +52,6 @@ router.post('/createBlog', verifyToken, createBlog);
  *     - Blog
  *     summary: Get all blogs
  *     description: Retrieve a list of all blogs.
- *     security:
- *      - Authorization: []
  *     responses:
  *       200:
  *         description: A list of blogs
@@ -76,7 +74,7 @@ router.post('/createBlog', verifyToken, createBlog);
  *       500:
  *         description: Server error
  */
-router.get('/getAllBlogs',verifyToken, getAllBlogs);
+router.get('/getAllBlogs', getAllBlogs);
 
 /**
  * @swagger
@@ -86,8 +84,6 @@ router.get('/getAllBlogs',verifyToken, getAllBlogs);
  *     - Blog
  *     summary: Get blog by ID
  *     description: Retrieve a single blog by its ID.
- *     security:
- *      - Authorization: []
  *     parameters:
  *       - name: id
  *         in: path
@@ -118,7 +114,7 @@ router.get('/getAllBlogs',verifyToken, getAllBlogs);
  *       500:
  *         description: Server error
  */
-router.get('/getBlogById/:id', verifyToken,getBlogById);
+router.get('/getBlogById/:id', getBlogById);
 
 /**
  * @swagger
@@ -128,8 +124,6 @@ router.get('/getBlogById/:id', verifyToken,getBlogById);
  *     - Blog
  *     summary: Get all active blogs
  *     description: Retrieve a list of all blogs that have a status of true.
- *     security:
- *      - Authorization: []
  *     responses:
  *       200:
  *         description: A list of active blogs
@@ -152,7 +146,7 @@ router.get('/getBlogById/:id', verifyToken,getBlogById);
  *       500:
  *         description: Server error
  */
-router.get('/getActiveBlogs', verifyToken, getActiveBlogs);
+router.get('/getActiveBlogs', getActiveBlogs);
 
 /**
  * @swagger

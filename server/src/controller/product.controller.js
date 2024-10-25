@@ -88,9 +88,10 @@ export const getProductById = async (req, res) => {
 };
 
 // Cập nhật sản phẩm
+// Cập nhật sản phẩm
 export const updateProduct = async (req, res) => {
   const { productId } = req.params;
-  const { productName, productDescription, productPrice, isActive, image } = req.body;
+  const { userId, productName, productDescription, productPrice, isActive, image } = req.body;
 
   if (!productId) {
     return res.status(400).json({ message: 'Product ID is required' });
@@ -104,6 +105,7 @@ export const updateProduct = async (req, res) => {
     }
 
     await product.update({
+      userId: userId !== undefined ? userId : product.userId,
       productName: productName !== undefined ? productName : product.productName,
       productDescription: productDescription !== undefined ? productDescription : product.productDescription,
       productPrice: productPrice !== undefined ? productPrice : product.productPrice,

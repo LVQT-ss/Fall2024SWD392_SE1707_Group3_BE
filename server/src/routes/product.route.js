@@ -145,17 +145,25 @@ router.get('/getProductById/:productId', getProductById);
  *           schema:
  *             type: object
  *             properties:
+ *               userId:
+ *                 type: integer
+ *                 example: 1
  *               productName:
  *                 type: string
+ *                 example: "Updated Koi Fish Food"
  *               productDescription:
  *                 type: string
+ *                 example: "Updated description for koi fish food"
  *               productPrice:
  *                 type: number
  *                 format: float
+ *                 example: 25.99
  *               isActive:
  *                 type: boolean
+ *                 example: true
  *               image:   # New image field
  *                 type: string
+ *                 example: "https://example.com/new_image.png"
  *     responses:
  *       200:
  *         description: Product updated successfully
