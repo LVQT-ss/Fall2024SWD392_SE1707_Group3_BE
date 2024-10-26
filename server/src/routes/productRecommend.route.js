@@ -16,7 +16,7 @@ const router = express.Router();
  *   post:
  *     tags:
  *       - ProductRecommend
- *     summary: Create a new product recommendation
+ *     summary: Create a new category-based product recommendation
  *     security:
  *       - Authorization: []
  *     requestBody:
@@ -26,10 +26,10 @@ const router = express.Router();
  *           schema:
  *             type: object
  *             required:
- *               - productId
+ *               - categoryId
  *               - waterParameterId
  *             properties:
- *               productId:
+ *               categoryId:
  *                 type: integer
  *               waterParameterId:
  *                 type: integer
@@ -110,7 +110,7 @@ router.get('/getProductRecommendByWaterParameterId/:waterParameterId', verifyTok
  *           schema:
  *             type: object
  *             properties:
- *               productId:
+ *               categoryId:
  *                 type: integer
  *               waterParameterId:
  *                 type: integer
