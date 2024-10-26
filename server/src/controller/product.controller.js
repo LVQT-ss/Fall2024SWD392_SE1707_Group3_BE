@@ -88,7 +88,6 @@ export const getProductById = async (req, res) => {
 };
 
 // Cập nhật sản phẩm
-// Cập nhật sản phẩm
 export const updateProduct = async (req, res) => {
   const { productId } = req.params;
   const { userId, productName, productDescription, productPrice, isActive, image } = req.body;

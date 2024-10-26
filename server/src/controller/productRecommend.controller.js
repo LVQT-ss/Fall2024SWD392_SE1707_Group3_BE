@@ -1,16 +1,17 @@
+import Product from '../models/Product.model.js';
 import ProductRecommend from '../models/productRecommend.model.js';
 
 // Create a new product recommendation
 export const createProductRecommend = async (req, res) => {
-  const { productId, waterParameterId } = req.body;
+  const { categoryId, waterParameterId } = req.body;
 
-  if (!productId || !waterParameterId) {
+  if (!categoryId || !waterParameterId) {
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
   try {
     const newRecommendation = await ProductRecommend.create({
-      productId,
+      categoryId,
       waterParameterId,
     });
     res.status(201).json(newRecommendation);
@@ -20,10 +21,17 @@ export const createProductRecommend = async (req, res) => {
   }
 };
 
-// Get all product recommendations
+// Fetch all product recommendations
 export const getAllProductRecommends = async (req, res) => {
   try {
-    const recommendations = await ProductRecommend.findAll();
+    const recommendations = await ProductRecommend.findAll({
+      include: [
+        {
+          model: Product,
+          attributes: ['productId', 'productName'],  // Include only the fields needed
+        },
+      ],
+    });
     res.status(200).json(recommendations);
   } catch (err) {
     console.error('Error fetching recommendations:', err);
@@ -31,7 +39,6 @@ export const getAllProductRecommends = async (req, res) => {
   }
 };
 
-// Get all recommendations by waterParameterId
 export const getProductRecommendByWaterParameterId = async (req, res) => {
   const { waterParameterId } = req.params;
 
@@ -42,6 +49,12 @@ export const getProductRecommendByWaterParameterId = async (req, res) => {
   try {
     const recommendations = await ProductRecommend.findAll({
       where: { waterParameterId },
+      include: [
+        {
+          model: Product,
+          attributes: ['productId', 'productName'],
+        },
+      ],
     });
 
     if (recommendations.length === 0) {
@@ -54,12 +67,10 @@ export const getProductRecommendByWaterParameterId = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
-
-
 // Update a product recommendation
 export const updateProductRecommend = async (req, res) => {
   const { recommendId } = req.params;
-  const { productId, waterParameterId } = req.body;
+  const { categoryId, waterParameterId } = req.body;
 
   if (!recommendId) {
     return res.status(400).json({ message: 'Recommendation ID is required' });
@@ -72,7 +83,7 @@ export const updateProductRecommend = async (req, res) => {
     }
 
     await recommendation.update({
-      productId: productId !== undefined ? productId : recommendation.productId,
+      categoryId: categoryId !== undefined ? categoryId : recommendation.categoryId,
       waterParameterId: waterParameterId !== undefined ? waterParameterId : recommendation.waterParameterId,
     });
 
