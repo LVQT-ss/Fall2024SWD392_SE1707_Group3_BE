@@ -410,7 +410,7 @@ router.get('/getPondById/:id', verifyToken, getPondById);
 // Router configuration (add to pond.routes.js)
 /**
  * @swagger
- * /api/pond/getPondById/{id}:
+ * /api/pond/getPondByIdForManager/{id}:
  *   get:
  *     tags:
  *       - Admin Controller
@@ -483,6 +483,6 @@ router.get('/getPondById/:id', verifyToken, getPondById);
  *       500:
  *         description: Server error
  */
-router.get('/getPondById/:id', verifyToken, getPondByIdforManager);
+router.get('/getPondByIdForManager/:id', verifyToken, getPondByIdforManager);
 
 export default router;
