@@ -1,6 +1,6 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../database/db.js';
-import Category from './Category.model.js';  
+import Category from './category.model.js';  
 import WaterParameter from './waterPara.model.js';  
 import Product from './Product.model.js';
 
