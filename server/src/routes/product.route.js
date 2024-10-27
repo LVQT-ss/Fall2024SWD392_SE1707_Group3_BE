@@ -54,8 +54,9 @@ const router = express.Router();
  *                 type: string
  *                 example: "https://example.com/image.png"
  *               isActive:
- *                 type: boolean
- *                 example: true
+ *                 type: string
+ *                 enum: [ "active", "inActive", "waiting" ]  # Updated enum values
+ *                 example: "active"
  *     responses:
  *       201:
  *         description: Product created successfully
@@ -159,8 +160,9 @@ router.get('/getProductById/:productId', getProductById);
  *                 format: float
  *                 example: 25.99
  *               isActive:
- *                 type: boolean
- *                 example: true
+ *                 type: string
+ *                 enum: [ "active", "inActive", "waiting" ]  # Updated enum values
+ *                 example: "active"
  *               image:   # New image field
  *                 type: string
  *                 example: "https://example.com/new_image.png"
@@ -200,8 +202,9 @@ router.put('/updateProduct/:productId', verifyToken, updateProduct);
  *             type: object
  *             properties:
  *               isActive:
- *                 type: boolean
- *                 example: true
+ *                 type: string
+ *                 enum: [ "active", "inActive", "waiting" ]  # Updated enum values
+ *                 example: "active"
  *     responses:
  *       200:
  *         description: Product active status updated successfully

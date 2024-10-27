@@ -44,7 +44,7 @@ export const getAllProductsOrigin = async (req, res) => {
 export const getAllProducts = async (req, res) => {
   try {
     const products = await Product.findAll({
-      where: { isActive: true }, // Thêm điều kiện để lấy sản phẩm có isActive là true
+      where: { isActive: 'active' }, // Thêm điều kiện để lấy sản phẩm có isActive là true
       include: {
         model: User,
         attributes: ['userId', 'username'],
@@ -68,7 +68,7 @@ export const getProductById = async (req, res) => {
     const product = await Product.findOne({
       where: {
         productId,
-        isActive: true, // Thêm điều kiện để chỉ lấy sản phẩm có isActive là true
+        isActive: active, // Thêm điều kiện để chỉ lấy sản phẩm có isActive là true
       },
       include: {
         model: User,
@@ -94,6 +94,10 @@ export const updateProduct = async (req, res) => {
 
   if (!productId) {
     return res.status(400).json({ message: 'Product ID is required' });
+  }
+
+  if (isActive && !['active', 'inActive', 'waiting'].includes(isActive)) {
+    return res.status(400).json({ message: 'Invalid value for isActive' });
   }
 
   try {
@@ -124,8 +128,8 @@ export const updateProductActiveStatus = async (req, res) => {
   const { productId } = req.params;
   const { isActive } = req.body;
 
-  if (!productId || isActive === undefined) {
-    return res.status(400).json({ message: 'Product ID and active status are required' });
+  if (isActive && !['active', 'inActive', 'waiting'].includes(isActive)) {
+    return res.status(400).json({ message: 'Invalid value for isActive' });
   }
 
   try {

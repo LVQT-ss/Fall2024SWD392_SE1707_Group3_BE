@@ -39,8 +39,8 @@ const Product = sequelize.define('Product', {
     allowNull: false,
   },
   isActive: {  
-    type: DataTypes.BOOLEAN,
-    defaultValue: true,
+    type: DataTypes.ENUM('active', 'inActive', 'waiting'),  // Updated values
+    defaultValue: 'waiting',
   },
   image: {  
     type: DataTypes.STRING,
