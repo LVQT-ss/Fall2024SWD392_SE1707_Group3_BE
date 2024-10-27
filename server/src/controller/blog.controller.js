@@ -21,8 +21,8 @@ export const createBlog = async (req, res) => {
       userId,
       blogTitle,
       blogContent,
-      blogStatus: true,  // Default to active
-      image,  // Add the image field if provided
+      blogStatus: 'active',  // Mặc định là active
+      image,  // Thêm trường hình ảnh nếu có
     });
 
     res.status(201).json(newBlog);
@@ -31,7 +31,6 @@ export const createBlog = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
-
 
 // Lấy tất cả các blog
 export const getAllBlogs = async (req, res) => {
@@ -70,11 +69,11 @@ export const getBlogById = async (req, res) => {
   }
 };
 
-// Get all active blogs (with status true)
+// Get all active blogs (with status active)
 export const getActiveBlogs = async (req, res) => {
   try {
     const activeBlogs = await Blog.findAll({
-      where: { blogStatus: true },
+      where: { blogStatus: 'active' }, // Sửa thành 'active'
       include: User, // Optionally include user information
     });
     res.status(200).json(activeBlogs);
@@ -89,8 +88,8 @@ export const updateBlogStatus = async (req, res) => {
   const { id } = req.params;
   const { blogStatus } = req.body;
 
-  if (!id || blogStatus === undefined) {
-    return res.status(400).json({ message: 'Blog ID and blogStatus are required' });
+  if (!id || !['active', 'inActive', 'waiting'].includes(blogStatus)) { // Cập nhật kiểm tra
+    return res.status(400).json({ message: 'Invalid blog ID or status value' });
   }
 
   try {
@@ -100,10 +99,7 @@ export const updateBlogStatus = async (req, res) => {
       return res.status(404).json({ message: 'Blog not found' });
     }
 
-    // Update only the blogStatus field
-    await blog.update({
-      blogStatus: blogStatus,
-    });
+    await blog.update({ blogStatus });
 
     res.status(200).json({ message: 'Blog status updated successfully', blog });
   } catch (err) {
@@ -140,7 +136,6 @@ export const updateBlog = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
-
 
 // Xóa blog
 export const deleteBlog = async (req, res) => {

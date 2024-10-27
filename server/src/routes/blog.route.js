@@ -1,6 +1,15 @@
 import express from 'express';
-import { createBlog, getAllBlogs, getBlogById, updateBlog, deleteBlog, getActiveBlogs, updateBlogStatus } from '../controller/blog.controller.js';
+import { 
+  createBlog, 
+  getAllBlogs, 
+  getBlogById, 
+  updateBlog, 
+  deleteBlog, 
+  getActiveBlogs, 
+  updateBlogStatus 
+} from '../controller/blog.controller.js';
 import { verifyToken } from '../middleware/verifyUser.js';
+
 const router = express.Router();
 
 /**
@@ -12,7 +21,7 @@ const router = express.Router();
  *     summary: Create a new blog
  *     description: This endpoint allows you to create a new blog.
  *     security:
- *      - Authorization: []
+ *       - Authorization: []
  *     requestBody:
  *       required: true
  *       content:
@@ -62,13 +71,13 @@ router.post('/createBlog', verifyToken, createBlog);
  *               items:
  *                 type: object
  *                 properties:
- *                   id:
+ *                   blogId:
  *                     type: string
  *                     example: 1
- *                   title:
+ *                   blogTitle:
  *                     type: string
  *                     example: Blog title
- *                   content:
+ *                   blogContent:
  *                     type: string
  *                     example: Blog content
  *       500:
@@ -82,33 +91,18 @@ router.get('/getAllBlogs', getAllBlogs);
  *   get:
  *     tags:
  *     - Blog
- *     summary: Get blog by ID
+ *     summary: Get a blog by ID
  *     description: Retrieve a single blog by its ID.
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: ID of the blog
+ *         description: ID of the blog to retrieve
  *         schema:
- *           type: string
- *           example: 1
+ *           type: integer
  *     responses:
  *       200:
- *         description: A single blog
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: string
- *                   example: 1
- *                 title:
- *                   type: string
- *                   example: Blog title
- *                 content:
- *                   type: string
- *                   example: Blog content
+ *         description: Blog details
  *       404:
  *         description: Blog not found
  *       500:
@@ -118,94 +112,19 @@ router.get('/getBlogById/:id', getBlogById);
 
 /**
  * @swagger
- * /api/blog/getActiveBlogs:
- *   get:
- *     tags:
- *     - Blog
- *     summary: Get all active blogs
- *     description: Retrieve a list of all blogs that have a status of true.
- *     responses:
- *       200:
- *         description: A list of active blogs
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: string
- *                     example: 1
- *                   title:
- *                     type: string
- *                     example: Blog title
- *                   content:
- *                     type: string
- *                     example: Blog content
- *       500:
- *         description: Server error
- */
-router.get('/getActiveBlogs', getActiveBlogs);
-
-/**
- * @swagger
- * /api/blog/updateBlogStatus/{id}:
- *   patch:
- *     tags:
- *     - Blog
- *     summary: Update the status of a blog by ID
- *     description: Update the status (blogStatus) of an existing blog by its ID.
- *     security:
- *      - Authorization: []
- *     parameters:
- *       - name: id
- *         in: path
- *         required: true
- *         description: ID of the blog to update
- *         schema:
- *           type: string
- *           example: 1
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               blogStatus:
- *                 type: boolean
- *                 example: true
- *     responses:
- *       200:
- *         description: Blog status updated successfully
- *       404:
- *         description: Blog not found
- *       400:
- *         description: Bad Request
- *       500:
- *         description: Server error
- */
-router.patch('/updateBlogStatus/:id', verifyToken, updateBlogStatus);
-
-/**
- * @swagger
  * /api/blog/updateBlog/{id}:
  *   put:
  *     tags:
  *     - Blog
- *     summary: Update blog by ID (excluding blog status)
- *     description: Update an existing blog by its ID. This route does not update the blog status.
- *     security:
- *      - Authorization: []
+ *     summary: Update a blog
+ *     description: Update blog information.
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
  *         description: ID of the blog to update
  *         schema:
- *           type: string
- *           example: 1
+ *           type: integer
  *     requestBody:
  *       required: true
  *       content:
@@ -215,24 +134,21 @@ router.patch('/updateBlogStatus/:id', verifyToken, updateBlogStatus);
  *             properties:
  *               blogTitle:
  *                 type: string
- *                 example: Updated Blog Title
  *               blogContent:
  *                 type: string
- *                 example: Updated blog content
  *               image:
  *                 type: string
- *                 example: https://example.com/new-image.jpg
  *     responses:
  *       200:
- *         description: Blog updated successfully
+ *         description: Blog successfully updated
+ *       400:
+ *         description: Bad Request - No fields to update
  *       404:
  *         description: Blog not found
- *       400:
- *         description: Bad Request
  *       500:
  *         description: Server error
  */
-router.put('/updateBlog/:id', verifyToken,updateBlog);
+router.put('/updateBlog/:id', updateBlog);
 
 /**
  * @swagger
@@ -240,26 +156,76 @@ router.put('/updateBlog/:id', verifyToken,updateBlog);
  *   delete:
  *     tags:
  *     - Blog
- *     summary: Delete blog by ID
- *     description: Delete an existing blog by its ID.
- *     security:
- *      - Authorization: []
+ *     summary: Delete a blog
+ *     description: Delete a blog by its ID.
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
  *         description: ID of the blog to delete
  *         schema:
- *           type: string
- *           example: 1
+ *           type: integer
  *     responses:
  *       200:
- *         description: Blog deleted successfully
+ *         description: Blog successfully deleted
  *       404:
  *         description: Blog not found
  *       500:
  *         description: Server error
  */
-router.delete('/deleteBlog/:id', verifyToken,deleteBlog);
+router.delete('/deleteBlog/:id', deleteBlog);
+
+/**
+ * @swagger
+ * /api/blog/getActiveBlogs:
+ *   get:
+ *     tags:
+ *     - Blog
+ *     summary: Get all active blogs
+ *     description: Retrieve a list of all active blogs.
+ *     responses:
+ *       200:
+ *         description: A list of active blogs
+ *       500:
+ *         description: Server error
+ */
+router.get('/getActiveBlogs', getActiveBlogs);
+
+/**
+ * @swagger
+ * /api/blog/updateBlogStatus/{id}:
+ *   put:
+ *     tags:
+ *     - Blog
+ *     summary: Update blog status
+ *     description: Update the status of a blog.
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: ID of the blog to update
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               blogStatus:
+ *                 type: string
+ *                 enum: [active, inActive, waiting]
+ *     responses:
+ *       200:
+ *         description: Blog status updated successfully
+ *       400:
+ *         description: Bad Request - Invalid ID or status value
+ *       404:
+ *         description: Blog not found
+ *       500:
+ *         description: Server error
+ */
+router.put('/updateBlogStatus/:id', updateBlogStatus);
 
 export default router;

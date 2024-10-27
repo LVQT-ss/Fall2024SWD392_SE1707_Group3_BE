@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../database/db.js';
-import Category from './category.model.js';
 import User from './user.models.js';
+import Category from './Category.model.js';
 
 const Product = sequelize.define('Product', {
   productId: {
@@ -39,8 +39,8 @@ const Product = sequelize.define('Product', {
     allowNull: false,
   },
   isActive: {  
-    type: DataTypes.BOOLEAN,
-    defaultValue: true,
+    type: DataTypes.ENUM('active', 'inActive', 'waiting'),  // Updated values
+    defaultValue: 'waiting',
   },
   image: {  
     type: DataTypes.STRING,

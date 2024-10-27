@@ -1,4 +1,5 @@
-import Category from '../models/category.model.js';
+
+import Category from '../models/Category.model.js';
 import Product from '../models/Product.model.js';
 
 // Tạo danh mục mới (Category)

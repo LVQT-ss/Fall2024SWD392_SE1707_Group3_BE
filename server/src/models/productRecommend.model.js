@@ -1,7 +1,8 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../database/db.js';
-import Product from './Product.model.js';  
+import Category from './Category.model.js';  
 import WaterParameter from './waterPara.model.js';  
+import Product from './Product.model.js';
 
 const ProductRecommend = sequelize.define('ProductRecommend', {
   recommendId: {
@@ -9,11 +10,11 @@ const ProductRecommend = sequelize.define('ProductRecommend', {
     primaryKey: true,
     autoIncrement: true,
   },
-  productId: {
+  categoryId: {
     type: DataTypes.INTEGER,
     references: {
-      model: Product,  
-      key: 'productId',
+      model: Category,  
+      key: 'categoryId',
     },
   },
   waterParameterId: {
@@ -29,10 +30,13 @@ const ProductRecommend = sequelize.define('ProductRecommend', {
 });
 
 // Associations
-ProductRecommend.belongsTo(Product, { foreignKey: 'productId', onDelete: 'CASCADE' });
-Product.hasMany(ProductRecommend, { foreignKey: 'productId', onDelete: 'CASCADE' });
+ProductRecommend.belongsTo(Category, { foreignKey: 'categoryId', onDelete: 'CASCADE' });
+Category.hasMany(ProductRecommend, { foreignKey: 'categoryId', onDelete: 'CASCADE' });
 
 ProductRecommend.belongsTo(WaterParameter, { foreignKey: 'waterParameterId', onDelete: 'CASCADE' });
 WaterParameter.hasMany(ProductRecommend, { foreignKey: 'waterParameterId', onDelete: 'CASCADE' });
+
+ProductRecommend.belongsTo(Product, { foreignKey: 'categoryId', targetKey: 'categoryId' });
+Product.hasMany(ProductRecommend, { foreignKey: 'categoryId' });
 
 export default ProductRecommend;

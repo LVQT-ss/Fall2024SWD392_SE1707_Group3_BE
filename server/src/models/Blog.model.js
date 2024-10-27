@@ -22,13 +22,13 @@ const Blog = sequelize.define('Blog', {
     defaultValue: DataTypes.NOW,
   },
   blogStatus: {
-    type: DataTypes.BOOLEAN,
+    type: DataTypes.ENUM('active', 'inActive', 'waiting'), // Cập nhật giá trị ở đây
     allowNull: false,
-    defaultValue: true,
+    defaultValue: 'waiting', // Mặc định là pending nếu không chỉ định
   },
   image: {
     type: DataTypes.STRING,
-    allowNull: true,  // Optional field for the image
+    allowNull: true,  // Trường tùy chọn cho hình ảnh
   },
 }, {
   tableName: 'blog',
