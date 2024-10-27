@@ -68,7 +68,7 @@ export const getProductById = async (req, res) => {
     const product = await Product.findOne({
       where: {
         productId,
-        isActive: active, // Thêm điều kiện để chỉ lấy sản phẩm có isActive là true
+        isActive: 'active', // Thêm điều kiện để chỉ lấy sản phẩm có isActive là active
       },
       include: {
         model: User,
