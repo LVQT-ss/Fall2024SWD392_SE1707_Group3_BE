@@ -43,8 +43,12 @@ export const getAllPondsByUser = async (req, res) => {
     const ponds = await Pond.findAll({ where: { userId } });
 
     const pondsWithCapacity = await Promise.all(ponds.map(async pond => {
+      // Updated to only count active koi fish
       const currentKoiCount = await KoiFish.count({
-        where: { currentPondId: pond.pondId }
+        where: { 
+          currentPondId: pond.pondId,
+          status: 'active'  // Only count active koi fish
+        }
       });
 
       return {
@@ -208,10 +212,9 @@ export const deletePondByOwner = async (req, res) => {
 
 export const getAllPonds = async (req, res) => {
   try {
-    // Get user from request (added by verifyToken middleware)
+
     const userId = req.userId;
     
-    // Find the user and check if they are an admin
     const user = await User.findByPk(userId);
     if (!user) {
       return res.status(404).json({
@@ -237,8 +240,12 @@ export const getAllPonds = async (req, res) => {
     });
 
     const pondsWithDetails = await Promise.all(ponds.map(async pond => {
+      // Updated to only count active koi fish
       const currentKoiCount = await KoiFish.count({
-        where: { currentPondId: pond.pondId }
+        where: { 
+          currentPondId: pond.pondId,
+          status: 'active'  // Only count active koi fish
+        }
       });
 
       return {

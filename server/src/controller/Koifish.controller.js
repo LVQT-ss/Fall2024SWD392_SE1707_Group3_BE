@@ -29,20 +29,24 @@ export const addKoi = async (req, res) => {
     const pond = await Pond.findOne({
       where: {
         pondId: currentPondId,
-        userId: userId
+        userId: userId,
+        status: 'active' // Only allow adding fish to active ponds
       }
     });
 
     if (!pond) {
       return res.status(404).json({
         success: false,
-        message: 'No available pond found. Please create a pond first or specify a valid pond.'
+        message: 'No available active pond found. Please create a pond first or specify a valid active pond.'
       });
     }
 
-    // Get current number of koi in the pond
+    // Get current number of ACTIVE koi in the pond
     const currentKoiCount = await KoiFish.count({
-      where: { currentPondId: currentPondId }
+      where: { 
+        currentPondId: currentPondId,
+        status: 'active' // Only count active fish
+      }
     });
 
     // Check if pond has reached its capacity
@@ -52,16 +56,16 @@ export const addKoi = async (req, res) => {
     if (remainingSlots <= 0) {
       return res.status(400).json({
         success: false,
-        message: `Pond has reached its maximum capacity of ${maxCapacity} koi fish.`,
+        message: `Pond has reached its maximum capacity of ${maxCapacity} active koi fish.`,
         pondCapacity: {
           maxCapacity,
-          currentCount: currentKoiCount,
+          currentActiveCount: currentKoiCount,
           remainingSlots: 0
         }
       });
     }
 
-    // Create the koi fish
+    // Create the koi fish with active status
     const newKoiFish = await KoiFish.create({
       koiName,
       koiBreed,
@@ -69,7 +73,8 @@ export const addKoi = async (req, res) => {
       koiImage,
       koiOrigin,
       currentPondId,
-      userId
+      userId,
+      status: 'active' // Set initial status as active
     });
 
     res.status(201).json({
@@ -78,7 +83,7 @@ export const addKoi = async (req, res) => {
       data: newKoiFish,
       pondCapacity: {
         maxCapacity,
-        currentCount: currentKoiCount + 1,
+        currentActiveCount: currentKoiCount + 1,
         remainingSlots: remainingSlots - 1
       }
     });
