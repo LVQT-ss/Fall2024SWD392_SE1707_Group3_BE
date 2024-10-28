@@ -53,31 +53,31 @@ export const createWaterPara = async (req, res) => {
     // Kiểm tra các điều kiện và tạo ProductRecommend tương ứng
     const productRecommends = [];
 
-    if (pondPHLevel < 7 || pondPHLevel > 7.5) {
+    if (pondPHLevel < 7 || pondPHLevel > 8.5) {
       productRecommends.push({ waterParameterId, categoryId: 4 });
     }
 
-    if (pondOxygenLevel > 5) {
+    if (pondOxygenLevel < 7 || pondOxygenLevel > 15) {
       productRecommends.push({ waterParameterId, categoryId: 5 });
     }
 
-    if (pondSaltLevel < 0.3 || pondSaltLevel > 0.7) {
+    if (pondSaltLevel < 0.1 || pondSaltLevel > 0.3) {
       productRecommends.push({ waterParameterId, categoryId: 6 });
     }
 
-    if (temperature < 20 || temperature > 27) {
+    if (temperature < 15 || temperature > 25) {
       productRecommends.push({ waterParameterId, categoryId: 7 });
     }
 
-    if (pondNitrite < 0.25) {
+    if (pondNitrite > 0.2 || pondNitrite < 0) {
       productRecommends.push({ waterParameterId, categoryId: 8 });
     }
 
-    if (pondNitrate < 40) {
+    if (pondNitrate > 40 || pondNitrate < 0) {
       productRecommends.push({ waterParameterId, categoryId: 9 });
     }
 
-    if (pondPhosphate < 0.2 || pondPhosphate > 2) {
+    if (pondPhosphate < 0 || pondPhosphate > 0.25) {
       productRecommends.push({ waterParameterId, categoryId: 10 });
     }
 

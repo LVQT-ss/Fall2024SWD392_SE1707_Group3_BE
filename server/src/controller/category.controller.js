@@ -50,7 +50,7 @@ export const getCategoryById = async (req, res) => {
     const category = await Category.findByPk(categoryId, {
       include: {
         model: Product,
-        as: 'products',
+        as: 'Products', 
         attributes: ['productId', 'productName'],
       },
     });

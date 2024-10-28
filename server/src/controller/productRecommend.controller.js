@@ -28,7 +28,7 @@ export const getAllProductRecommends = async (req, res) => {
       include: [
         {
           model: Product,
-          attributes: ['productId', 'productName'],  // Include only the fields needed
+          attributes: ['productId', 'productName', 'image'],  // Include only the fields needed
         },
       ],
     });
@@ -52,7 +52,7 @@ export const getProductRecommendByWaterParameterId = async (req, res) => {
       include: [
         {
           model: Product,
-          attributes: ['productId', 'productName'],
+          attributes: ['productId', 'productName', 'image'],
         },
       ],
     });
