@@ -57,7 +57,7 @@ export const getAllProducts = async (req, res) => {
   }
 };
 
-// Lấy sản phẩm theo ID và chỉ lấy sản phẩm active
+// Lấy sản phẩm theo ID 
 export const getProductById = async (req, res) => {
   const { productId } = req.params;
   if (!productId) {
@@ -66,10 +66,7 @@ export const getProductById = async (req, res) => {
 
   try {
     const product = await Product.findOne({
-      where: {
-        productId,
-        isActive: 'active', // Thêm điều kiện để chỉ lấy sản phẩm có isActive là active
-      },
+      where: { productId },
       include: {
         model: User,
         attributes: ['userId', 'username'],
@@ -77,7 +74,7 @@ export const getProductById = async (req, res) => {
     });
 
     if (!product) {
-      return res.status(404).json({ message: 'Product not found or inactive' });
+      return res.status(404).json({ message: 'Product not found' });
     }
 
     res.status(200).json(product);
