@@ -387,7 +387,8 @@ export const getPondById = async (req, res) => {
       });
     }
 
-    if (pond.userId !== userId) {
+
+    if (pond.userId !== userId  && user.usertype !== 'Manager' && user.usertype !== 'Staff' ) {
       return res.status(403).json({
         success: false,
         message: 'You do not have permission to view this pond'

@@ -1,6 +1,6 @@
 // src/routes/user.route.js
 import express from 'express';
-import { getAllUsers, getUserById, updateUser, deleteUser, getAllStaff, getAllCustomer  } from '../controller/user.controller.js';
+import { getAllUsers, getUserById, updateUser, deleteUser, getAllStaff, getAllCustomer, logout  } from '../controller/user.controller.js';
 const router = express.Router();
 // GET METHOD for getalluser
 /**
@@ -230,4 +230,9 @@ router.delete('/delete/:userId', deleteUser);
  *         description: Server error
  */
 router.get('/:id', getUserById);
+
+
+router.post('/logout', logout);
+
+
 export default router;

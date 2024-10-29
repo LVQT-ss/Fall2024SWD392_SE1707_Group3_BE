@@ -339,13 +339,13 @@ export const getKoiFishById = async (req, res) => {
       attributes: ['userId']
     });
 
-    if (req.usertype !== 'Manager' && koiFishWithUser.userId !== userId) {
+    if (koiFishWithUser.userId !== userId && req.userType !== 'Manager' && req.userType !== 'Staff') {
       return res.status(403).json({
         success: false,
         message: 'You do not have permission to view this koi fish'
       });
     }
-
+    
     res.status(200).json({
       success: true,
       data: koiFish
