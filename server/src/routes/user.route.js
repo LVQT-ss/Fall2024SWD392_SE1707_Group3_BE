@@ -144,6 +144,9 @@ router.get('/getallcustomer', getAllCustomer);
  *               email:
  *                 type: string
  *                 example: johndoe@example.com
+ *               image:
+ *                 type: string
+ *                 example: https://www.google.com/url?sa=i&url=https%3A%2F%2Fpict.ai%2Fimages%2FVGrP03%2Fview&psig=AOvVaw2aVyhNnWkimr3cQPEVahiT&ust=1730911428262000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCPDhr9fRxYkDFQAAAAAdAAAAABAE
  *               userStatus:
  *                 type: boolean
  *                 example: true

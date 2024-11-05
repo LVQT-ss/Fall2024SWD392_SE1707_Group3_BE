@@ -496,7 +496,7 @@ export const getKoiHealthByFishId = async (req, res) => {
     }
 
     // Check ownership if not manager
-    if (req.userType !== 'Manager' && koiFish.userId !== userId) {
+    if (req.userType !== 'Manager' && req.userType !== 'Staff' && koiFish.userId !== userId) {
       return res.status(403).json({
         success: false,
         message: 'You do not have permission to view this koi fish\'s health records'
