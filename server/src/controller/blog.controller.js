@@ -21,7 +21,7 @@ export const createBlog = async (req, res) => {
       userId,
       blogTitle,
       blogContent,
-      blogStatus: 'active',  // Mặc định là active
+      blogStatus: 'waiting',  // Mặc định là active
       image,  // Thêm trường hình ảnh nếu có
     });
 
